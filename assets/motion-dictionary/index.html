@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Шпаргалка по анимации</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="ui/bookmark-theme.css">
+  <link rel="stylesheet" href="ui/dictionary-skin.css">
+  <style>
+    .page-header { position: sticky; top: 0; z-index: 10; background: var(--bg); }
+    .detail { top: 76px; max-height: calc(100dvh - 96px); }
+    :root[data-layout="deck"] :is(.page-header, main) { max-width: none; padding-inline: 32px; }
+    @media (min-width: 1500px) {
+      :root[data-layout="deck"] .workspace { grid-template-columns: minmax(0, 1fr) 400px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <h1 class="page-title">Словарь</h1>
+  </header>
+  <main>
+    <section id="catalog" class="workspace" aria-label="Каталог движений">
+      <div class="catalog">
+        <nav id="categories" class="categories" aria-label="Группы движений"></nav>
+        <div id="cards" class="cards"></div>
+      </div>
+      <aside id="detail" class="detail" aria-label="Выбранное движение" tabindex="-1">
+        <button id="close-detail" class="close-detail" aria-label="Закрыть пример"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+        <h2 id="detail-name"></h2><p id="description" class="description"></p>
+        <div id="detail-demo" class="detail-demo"></div>
+        <div class="parameters"><label id="duration-control">Длительность <output id="duration-value"></output><input id="duration" type="range" min="100" max="2400" step="50"></label><label id="easing-control">Плавность <select id="easing"><option value="ease-out">ease-out</option><option value="ease-in">ease-in</option><option value="ease-in-out">ease-in-out</option><option value="linear">linear</option></select></label></div>
+        <div class="prompt-field"><textarea id="prompt" rows="3" readonly aria-label="Текст запроса для ИИ"></textarea><button id="copy">Копировать</button></div>
+      </aside>
+    </section>
+  </main>
+  <div id="status" class="sr-only" role="status"></div>
+  <script src="dictionary.js"></script>
+  <script src="deck-scroll.js?v=4"></script>
+</body>
+</html>

@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Реверс-инжиниринг креативов</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="presentation.css?v=25">
+  <link rel="stylesheet" href="intro.css?v=13">
+  <link rel="stylesheet" href="assets/slide-10/vin-preview.css?v=5">
+  <script defer src="slides.js?v=34"></script>
+  <script defer src="assets/slide-10/gsap.min.js"></script>
+  <script defer src="assets/slide-10/number-help-scene.js"></script>
+  <script defer src="assets/slide-10/vin-preview.js?v=3"></script>
+  <script defer src="assets/airbnb-storyboard/storyboard.js"></script>
+  <script defer src="intro.js?v=9"></script>
+  <script defer src="presentation.js?v=11"></script>
+</head>
+<body>
+  <main id="presentation" aria-label="Презентация">
+    <div id="frame">
+      <section id="slide" aria-label="Слайд" tabindex="-1">
+        <div id="camera">
+          <img id="poster" alt="" draggable="false">
+          <div id="media"></div>
+          <div id="links"></div>
+          <div id="build-content"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <template id="intro-badge-slide">
+    <img class="intro-badge" src="assets/slide-02/badge.png" alt="Бейдж Никиты Мосолова" width="850" height="1080" draggable="false">
+    <div class="intro-photo">
+      <img src="assets/slide-02/zoomlion-exhibition.png" alt="Экскаватор Zoomlion на выставке" width="1138" height="817" draggable="false">
+    </div>
+  </template>
+  <template id="intro-tools-slide">
+    <div class="intro-tools">
+      <button class="intro-tool intro-tool-stiletto" type="button" aria-label="Прокрутить иконку Stiletto">
+        <span class="intro-tool-view" aria-hidden="true"><span class="intro-tool-art"></span></span>
+        <span class="intro-tool-label">STILETTO</span>
+      </button>
+      <button class="intro-tool intro-tool-editor" type="button" aria-label="Прокрутить иконку Avito Editor">
+        <span class="intro-tool-view" aria-hidden="true"><span class="intro-tool-art"></span></span>
+        <span class="intro-tool-label">AVITO EDITOR</span>
+      </button>
+      <button class="intro-tool intro-tool-remark" type="button" aria-label="Прокрутить иконку Remark">
+        <span class="intro-tool-view" aria-hidden="true"><span class="intro-tool-art"></span></span>
+        <span class="intro-tool-label">REMARK</span>
+      </button>
+      <button class="intro-tool intro-tool-mayonnaise" type="button" aria-label="Прокрутить иконку «Майонез»">
+        <span class="intro-tool-view" aria-hidden="true"><span class="intro-tool-art"></span></span>
+        <span class="intro-tool-label">МАЙОНЕЗ</span>
+      </button>
+    </div>
+  </template>
+  <template id="intro-recording-slide">
+    <div class="intro-window">
+      <div class="intro-window-bar" aria-hidden="true"></div>
+      <video class="intro-recording" muted playsinline preload="auto" disablepictureinpicture aria-hidden="true"></video>
+    </div>
+  </template>
+  <template id="intro-parts-slide">
+    <div class="intro-window">
+      <div class="intro-window-bar" aria-hidden="true"></div>
+      <div class="intro-parts-scroll" tabindex="0" role="region" aria-label="Разборка экскаватора при прокрутке">
+        <div class="intro-parts-stage">
+          <header class="intro-parts-copy">
+            <div class="intro-comtrans-logo" role="img" aria-label="Авито Спецтехника">
+              <img class="intro-avito-mark" src="assets/slide-05/avito-mark.svg" alt="">
+              <div>
+                <img class="intro-avito-word" src="assets/slide-05/avito-word.svg" alt="">
+                <img class="intro-comtrans-word" src="assets/slide-05/comtrans-word.svg" alt="">
+              </div>
+            </div>
+            <h1>Разбираем<br>по&nbsp;винтикам</h1>
+            <p>Чтобы найти отличные и&nbsp;хорошие<br>модели спецтехники</p>
+          </header>
+          <div class="intro-parts-frames">
+            <img src="assets/slide-05/frames/000.webp" alt="" draggable="false">
+            <canvas aria-hidden="true"></canvas>
+          </div>
+        </div>
+        <section class="intro-parts-details" aria-labelledby="intro-parts-details-title">
+          <h2 id="intro-parts-details-title">Что внутри оценки</h2>
+          <div class="intro-parts-cards">
+            <article>
+              <span class="intro-parts-icon"><img src="assets/slide-05/reliability.svg" alt=""></span>
+              <h3>Надёжность и&nbsp;ресурс</h3>
+              <p>Ресурс узлов, наработка между отказами, дефекты и&nbsp;отзывные кампании</p>
+            </article>
+            <article>
+              <span class="intro-parts-icon"><img src="assets/slide-05/technology.svg" alt=""></span>
+              <h3>Технологии и&nbsp;оснащение</h3>
+              <p>Мониторинг, диагностика, онлайн-каталоги и&nbsp;цифровые сервисы</p>
+            </article>
+            <article>
+              <span class="intro-parts-icon"><img src="assets/slide-05/service.svg" alt=""></span>
+              <h3>Сервис и&nbsp;запчасти</h3>
+              <p>Гарантия, сервисные точки, сроки поставки расходников и&nbsp;ключевых узлов</p>
+            </article>
+          </div>
+        </section>
+      </div>
+    </div>
+  </template>
+  <template id="truck-magic-transition">
+    <div class="truck-magic" data-slide-transition aria-hidden="true">
+      <img class="truck-magic-before" data-transition-before alt="">
+      <div class="truck-magic-flash"></div>
+      <div class="truck-magic-glow"></div>
+      <svg class="truck-magic-sky" viewBox="0 0 1920 1080" fill="none">
+        <defs>
+          <mask id="truck-rainbow-mask" maskUnits="userSpaceOnUse" x="-128" y="0" width="2300" height="1080">
+            <path class="truck-magic-draw" d="M-120 706C383 162 1253 4 2010 309" pathLength="1" stroke="#fff" stroke-width="108"/>
+          </mask>
+          <path id="truck-magic-star" d="M0-18Q2-3 18 0Q2 3 0 18Q-2 3-18 0Q-2-3 0-18Z" fill="currentColor"/>
+          <path id="truck-magic-confetti" d="M-4-12Q3-8 6-9L4 12Q-2 10-6 11Z" fill="currentColor"/>
+          <g id="truck-magic-bug">
+            <ellipse cy="2" rx="10" ry="13" fill="#f32b56" stroke="#fda2b0" stroke-width="1.4"/>
+            <path d="M-6-9a6 6 0 0 1 12 0m-6 0v24" stroke="#241326" stroke-width="2" fill="#241326"/>
+            <path d="M-5-1h.1m9 0h.1m-8 6h.1m7 0h.1m-6 5h.1m5 0h.1" stroke="#241326" stroke-width="3" stroke-linecap="round"/>
+          </g>
+        </defs>
+        <g class="truck-magic-ribbon" mask="url(#truck-rainbow-mask)" stroke-width="12">
+          <path d="M-120 680C383 136 1253 -22 2010 283" stroke="#ff6696"/>
+          <path d="M-120 689C383 145 1253 -13 2010 292" stroke="#ffab61"/>
+          <path d="M-120 698C383 154 1253 -4 2010 301" stroke="#ffe78c"/>
+          <path d="M-120 707C383 163 1253 5 2010 310" stroke="#9defa1"/>
+          <path d="M-120 716C383 172 1253 14 2010 319" stroke="#78d9ff"/>
+          <path d="M-120 725C383 181 1253 23 2010 328" stroke="#a8a4ff"/>
+          <path d="M-120 734C383 190 1253 32 2010 337" stroke="#e3a3fc"/>
+        </g>
+        <g class="truck-magic-pony">
+          <g transform="scale(1.55)">
+          <path d="M-22 2Q-50-14-42 7Q-35 20-23 13" stroke="#a999ff" stroke-width="8" stroke-linecap="round"/>
+          <path d="M-21 19l-8 15m20-16 2 15m15-17 13 15m0-16 15 8" stroke="#f6daff" stroke-width="6" stroke-linecap="round"/>
+          <path d="M-28 5Q-25-8-8-7L6-8 12-22 12-36 21-28 29-29 42-16 38-8 24-9 19 10Q11 25-11 23Q-29 21-28 5Z" fill="#f6daff"/>
+          <path d="M15-27Q3-27 3-12Q6-11-3-2Q10-4 12-16Z" fill="#a999ff"/>
+          <circle cx="28" cy="-20" r="2.5" fill="#493256"/>
+          </g>
+        </g>
+        <g class="truck-magic-particles"></g>
+      </svg>
+    </div>
+  </template>
+  <template id="meme-transition">
+    <div class="meme-transition" data-slide-transition aria-hidden="true">
+      <img class="meme-transition-before" data-transition-before alt="">
+      <div class="meme-transition-flare"></div>
+      <div class="meme-transition-stickers"></div>
+    </div>
+  </template>
+  <template id="strike-transition">
+    <div class="strike-transition" data-slide-transition aria-hidden="true">
+      <img class="strike-transition-before" data-transition-before alt="">
+    </div>
+  </template>
+  <template id="cover-credit-slide">
+    <div class="cover-credit-punctuation" aria-hidden="true"></div>
+  </template>
+  <template id="reverse-engineering-slide">
+    <section class="reverse-engineering">
+      <h1>Реверс-<br>инжиниринг</h1>
+      <p class="reverse-engineering-term"><span class="typographic-symbol">[</span>Обратная разработка<span class="typographic-symbol">]</span></p>
+      <p>Разбор готового решения для&nbsp;понимания<br>его устройства и&nbsp;принципов работы</p>
+    </section>
+  </template>
+  <template id="outsourcing-highlight-slide">
+    <h1 class="outsourcing-highlight">
+      <span>Не&nbsp;передавайте<br>мышление</span>
+      <strong>на&nbsp;аутсорс</strong>
+    </h1>
+  </template>
+  <template id="look-with-your-eyes-slide">
+    <section class="eye-gaze">
+      <h1>Ищите глазами</h1>
+      <div class="eye-gaze-pair" aria-hidden="true">
+        <div class="eye-gaze-eye"><span class="eye-gaze-iris"></span></div>
+        <div class="eye-gaze-eye"><span class="eye-gaze-iris"></span></div>
+      </div>
+    </section>
+  </template>
+  <template id="mcp-breakdown-slide">
+    <dl class="breakdown-copy mcp-breakdown-copy">
+      <div>
+        <dt>Поворот</dt>
+        <dd>Белая карточка профиля разворачивается вокруг вертикальной оси, открывая цветную сторону.</dd>
+      </div>
+      <div>
+        <dt>Перелив</dt>
+        <dd>По&nbsp;цветной стороне проходит голографический блик. Под&nbsp;ним проступает защитный узор, а&nbsp;портрет меняет оттенок.</dd>
+      </div>
+      <div>
+        <dt>Сдвиг</dt>
+        <dd>По&nbsp;нажатию открывается экран проверки, и&nbsp;бейдж становится большой карточкой в&nbsp;верхней части экрана.</dd>
+      </div>
+      <div>
+        <dt>Плавная смена текста</dt>
+        <dd>Список под&nbsp;карточкой размывается и&nbsp;исчезает. На&nbsp;его месте появляется пояснение о&nbsp;проверке личности.</dd>
+      </div>
+      <div>
+        <dt>Параллакс</dt>
+        <dd>При&nbsp;наклоне карты блик смещается по&nbsp;её поверхности. За&nbsp;счёт этого карта выглядит объёмной.</dd>
+      </div>
+      <div>
+        <dt>Характер движения</dt>
+        <dd>По&nbsp;оценке 60fps, движение замедляется к&nbsp;концу и&nbsp;слегка пружинит. В&nbsp;описании также сказано, что карта реагирует на&nbsp;наклон телефона. По&nbsp;записи видно движение, а&nbsp;его связь с&nbsp;гироскопом не&nbsp;подтверждена.</dd>
+      </div>
+    </dl>
+    <figure class="mcp-breakdown-preview">
+      <video src="assets/ideas-references/airbnb-verification.mp4" poster="assets/ideas-references/airbnb-verification-poster.jpg"
+        width="800" height="800" muted playsinline preload="auto" disablepictureinpicture aria-label="Анимация карточки верификации Airbnb"></video>
+      <figcaption>MCP</figcaption>
+    </figure>
+  </template>
+  <template id="airbnb-storyboard-slide">
+    <section class="frame-storyboard" aria-label="Покадровый разбор переворота карточки Airbnb">
+      <div class="frame-storyboard-scroll" tabindex="0">
+        <div class="frame-storyboard-surface">
+          <img src="assets/airbnb-storyboard/overview.png" width="1704" height="1390"
+            alt="20 ключевых кадров в трёх разделах: переворот и смена текста, два прохода голографии, возврат в профиль">
+        </div>
+      </div>
+      <dialog class="frame-detail" aria-labelledby="frame-detail-title">
+        <div class="frame-detail-card">
+          <img alt="Крупный план выбранного кадра" width="960" height="960">
+          <div class="frame-detail-copy">
+            <p class="frame-detail-stage"></p>
+            <p class="frame-detail-timing"></p>
+            <h2 id="frame-detail-title"></h2>
+          </div>
+          <button type="button" aria-label="Закрыть кадр" autofocus>×</button>
+        </div>
+      </dialog>
+    </section>
+  </template>
+  <template id="reference-takeaway-slide">
+    <section class="reference-takeaway">
+      <h1>Codex не&nbsp;понимает,<br>что тебе нужно</h1>
+      <p>Нерелевантные примеры из&nbsp;Mobbin<br>при&nbsp;поиске рефов</p>
+    </section>
+  </template>
+  <template id="pinned-context-transfer-slide">
+    <div class="pinned-transfer" role="img" aria-label="Файл context.md переносится из рабочих задач Авито в Анимашки">
+      <span class="pinned-transfer-origin" aria-hidden="true"></span>
+      <span class="pinned-transfer-target" aria-hidden="true"></span>
+      <span class="pinned-transfer-flight" aria-hidden="true"><i></i>context.md</span>
+      <span class="pinned-transfer-file" aria-hidden="true"><i></i>context.md</span>
+    </div>
+  </template>
+  <template id="context-pillars-slide">
+    <div class="context-pillars">
+      <section class="context-pillar" data-reveal-step="1" hidden style="--pillar-x: -224px; --pillar-y: 307px; --crop-width: 688px; --sprite-size: 1680px; --sprite-x: 0px; --label-x: 43px; --label-y: 340px; --label-width: 327px; --impact-x: 204px; --stone-color: #a5c2b0">
+        <div class="context-pillar-art">
+          <div class="context-pillar-crop"><img src="assets/context-pillars/columns.png" alt=""></div>
+          <h2>Что<br>делаем</h2>
+        </div>
+        <div class="context-pillar-debris" aria-hidden="true"></div>
+      </section>
+      <section class="context-pillar" data-reveal-step="2" hidden style="--pillar-x: 343px; --pillar-y: 0px; --crop-width: 413px; --sprite-size: 1970px; --sprite-x: -1243px; --label-x: 343px; --label-y: 124px; --label-width: 413px; --impact-x: 548px; --stone-color: #91b9d6">
+        <div class="context-pillar-art">
+          <div class="context-pillar-crop"><img src="assets/context-pillars/columns.png" alt=""></div>
+          <h2>Сценарий</h2>
+        </div>
+        <div class="context-pillar-debris" aria-hidden="true"></div>
+      </section>
+      <section class="context-pillar" data-reveal-step="3" hidden style="--pillar-x: 674px; --pillar-y: 232px; --crop-width: 453px; --sprite-size: 1696px; --sprite-x: -622px; --label-x: 722px; --label-y: 234px; --label-width: 449px; --impact-x: 944px; --stone-color: #abadb3">
+        <div class="context-pillar-art">
+          <div class="context-pillar-crop"><img src="assets/context-pillars/columns.png" alt=""></div>
+          <h2>Зачем</h2>
+        </div>
+        <div class="context-pillar-debris" aria-hidden="true"></div>
+      </section>
+      <section class="context-pillar" data-reveal-step="4" hidden style="--pillar-x: 1180px; --pillar-y: 31px; --crop-width: 413px; --sprite-size: 1970px; --sprite-x: -1243px; --label-x: 1171px; --label-y: 155px; --label-width: 449px; --impact-x: 1384px; --stone-color: #91b9d6">
+        <div class="context-pillar-art">
+          <div class="context-pillar-crop"><img src="assets/context-pillars/columns.png" alt=""></div>
+          <h2>Для кого</h2>
+        </div>
+        <div class="context-pillar-debris" aria-hidden="true"></div>
+      </section>
+      <section class="context-pillar" data-reveal-step="5" hidden style="--pillar-x: 1276px; --pillar-y: 400px; --crop-width: 688px; --sprite-size: 1680px; --sprite-x: 0px; --label-x: 1543px; --label-y: 489px; --label-width: 327px; --impact-x: 1700px; --stone-color: #a5c2b0">
+        <div class="context-pillar-art">
+          <div class="context-pillar-crop"><img src="assets/context-pillars/columns.png" alt=""></div>
+          <h2 class="context-pillar-long-label">Ограничения</h2>
+        </div>
+        <div class="context-pillar-debris" aria-hidden="true"></div>
+      </section>
+    </div>
+  </template>
+  <template id="idea-pillars-slide">
+    <div class="context-pillars">
+      <section class="context-pillar" data-reveal-step="1" hidden style="--pillar-x: -184px; --pillar-y: 307px; --crop-width: 688px; --sprite-size: 1680px; --sprite-x: 0px; --label-x: 24px; --label-y: 328px; --label-width: 432px; --impact-x: 240px; --stone-color: #a5c2b0">
+        <div class="context-pillar-art">
+          <div class="context-pillar-crop"><img src="assets/context-pillars/columns.png" alt=""></div>
+          <h2>Главная<br>идея</h2>
+        </div>
+        <div class="context-pillar-debris" aria-hidden="true"></div>
+      </section>
+      <section class="context-pillar" data-reveal-step="2" hidden style="--pillar-x: 516px; --pillar-y: 95px; --crop-width: 413px; --sprite-size: 1970px; --sprite-x: -1243px; --label-x: 504px; --label-y: 128px; --label-width: 432px; --impact-x: 720px; --stone-color: #91b9d6">
+        <div class="context-pillar-art">
+          <div class="context-pillar-crop"><img src="assets/context-pillars/columns.png" alt=""></div>
+          <h2>Место<br>и&nbsp;сценарий</h2>
+        </div>
+        <div class="context-pillar-debris" aria-hidden="true"></div>
+      </section>
+      <section class="context-pillar" data-reveal-step="3" hidden style="--pillar-x: 926px; --pillar-y: 296px; --crop-width: 453px; --sprite-size: 1696px; --sprite-x: -622px; --label-x: 984px; --label-y: 220px; --label-width: 432px; --impact-x: 1200px; --stone-color: #abadb3">
+        <div class="context-pillar-art">
+          <div class="context-pillar-crop"><img src="assets/context-pillars/columns.png" alt=""></div>
+          <h2>Визуальная<br>метафора</h2>
+        </div>
+        <div class="context-pillar-debris" aria-hidden="true"></div>
+      </section>
+      <section class="context-pillar" data-reveal-step="4" hidden style="--pillar-x: 1256px; --pillar-y: 110px; --crop-width: 688px; --sprite-size: 1680px; --sprite-x: 0px; --label-x: 1464px; --label-y: 196px; --label-width: 432px; --impact-x: 1680px; --stone-color: #a5c2b0">
+        <div class="context-pillar-art">
+          <div class="context-pillar-crop"><img src="assets/context-pillars/columns.png" alt=""></div>
+          <h2>Где искать</h2>
+        </div>
+        <div class="context-pillar-debris" aria-hidden="true"></div>
+      </section>
+    </div>
+  </template>
+  <template id="approach-slide">
+    <div class="approach">
+      <div class="approach-line" aria-hidden="true"></div>
+      <ol class="approach-steps">
+        <li>
+          <h2>Контекст</h2>
+          <p>Понять задачу автора, аудиторию и&nbsp;условия</p>
+        </li>
+        <li>
+          <h2>Приём</h2>
+          <p>Разобрать устройство решения и&nbsp;связи между&nbsp;частями</p>
+        </li>
+        <li>
+          <h2>Переосмысление</h2>
+          <p>Применить приём к&nbsp;своей задаче и&nbsp;добавить свой смысл</p>
+        </li>
+        <li>
+          <h2>Сборка</h2>
+          <p>Собрать свою версию и&nbsp;проверить результат</p>
+        </li>
+      </ol>
+      <img class="approach-car" src="assets/slide-09/byd.png" alt="Красный BYD F3" width="665" height="443" draggable="false">
+    </div>
+  </template>
+  <template id="creative-letter-slide">
+    <h1 class="creative-letter-title" aria-label="Реверс-инжиниринг креативов">
+      <span class="creative-letter-lead" aria-hidden="true">Реверс-инжиниринг</span>
+      <span class="creative-letter-word" aria-hidden="true">
+        <span class="creative-letter" style="--index: 0; --accent: #baa4f1"><span class="creative-letter-turn" data-letter="К"></span></span>
+        <span class="creative-letter" style="--index: 1; --accent: #9addf0"><span class="creative-letter-turn" data-letter="Р"></span></span>
+        <span class="creative-letter" style="--index: 2; --accent: #f4eddf"><span class="creative-letter-turn" data-letter="Е"></span></span>
+        <span class="creative-letter" style="--index: 3; --accent: #f69b8e"><span class="creative-letter-turn" data-letter="А"></span></span>
+        <span class="creative-letter" style="--index: 4; --accent: #cbdbab"><span class="creative-letter-turn" data-letter="Т"></span></span>
+        <span class="creative-letter" style="--index: 5; --accent: #c0aaf3"><span class="creative-letter-turn" data-letter="И"></span></span>
+        <span class="creative-letter" style="--index: 6; --accent: #7be1e1"><span class="creative-letter-turn" data-letter="В"></span></span>
+        <span class="creative-letter" style="--index: 7; --accent: #f5d5a5"><span class="creative-letter-turn" data-letter="О"></span></span>
+        <span class="creative-letter" style="--index: 8; --accent: #f487a4"><span class="creative-letter-turn" data-letter="В"></span></span>
+      </span>
+    </h1>
+  </template>
+  <template id="animation-flow-slide">
+    <div class="animation-flow">
+      <div class="approach-line flow-line-top" aria-hidden="true"></div>
+      <ol class="approach-steps flow-top">
+        <li><h2>Контекст</h2><p>Передаём задачу, материалы, ТТ<br>и&nbsp;место в&nbsp;сценарии</p></li>
+        <li><h2>Идея и рефы</h2><p>Определяем главную мысль и&nbsp;ищем метафору,<br>которая её передаст</p></li>
+        <li><h2>Визуализация</h2><p>Разбираем движение, выбираем приёмы и&nbsp;собираем превью</p></li>
+      </ol>
+      <div class="approach-line flow-line-bottom" aria-hidden="true"></div>
+      <ol class="approach-steps flow-bottom" start="4">
+        <li><h2>Итерации</h2><p>Называем вещи своими именами при&nbsp;правках</p></li>
+        <li><h2>Передача в разработку</h2><p>Готовим нужный формат,<br>проверяем и&nbsp;заливаем</p></li>
+      </ol>
+      <div class="flow-vin-slot" data-vin-slot></div>
+    </div>
+  </template>
+  <template id="vin-comparison-slide">
+    <div class="vin-comparison">
+      <div class="vin-comparison-panel vin-comparison-reference">
+        <video src="assets/vin-comparison/reference.mp4" poster="assets/vin-comparison/reference-poster.jpg" muted playsinline preload="auto" disablepictureinpicture aria-label="Референс с 60fps, активация карты"></video>
+        <button class="vin-comparison-replay" type="button" data-comparison-replay="reference" aria-label="Повторить референс"></button>
+      </div>
+      <div class="vin-comparison-panel vin-comparison-rebuild">
+        <button class="vin-comparison-replay" type="button" data-comparison-replay="vin" aria-label="Повторить VIN-анимацию"></button>
+        <div class="vin-comparison-vin" data-vin-slot>
+          <img class="vin-comparison-still" src="assets/vin-comparison/rebuild-still.png" alt="Мокап интерфейса «Где найти номер»">
+        </div>
+      </div>
+      <p class="vin-comparison-label vin-comparison-label-reference">Реф</p>
+      <p class="vin-comparison-label vin-comparison-label-rebuild">Реверс-пересборка</p>
+    </div>
+  </template>
+  <template id="ideas-reference-slide">
+    <div class="ideas-reference-board">
+      <img class="ideas-reference-overview" src="assets/ideas-references/overview.png" alt="Четыре блока референсов: анимация, звуки и хаптики, скролл, пасхалки">
+      <section class="ideas-reference-animation" style="--block-x: 216" aria-labelledby="ideas-animation-title">
+        <header>
+          <h2 id="ideas-animation-title">Анимация</h2>
+          <p>Переворот документа, зум к&nbsp;номеру и&nbsp;подсветка зон</p>
+        </header>
+        <ul class="ideas-animation-cards">
+          <li class="ideas-animation-card">
+            <img class="ideas-animation-preview" src="assets/ideas-references/plasma-visa.png" alt="Карта Plasma Visa на экране активации">
+            <h3>Plasma Visa · Активация карты</h3>
+            <p>Переворот и&nbsp;блик на&nbsp;карте.</p>
+          </li>
+          <li class="ideas-animation-card">
+            <svg class="ideas-animation-preview" viewBox="0 0 560 560" aria-hidden="true">
+              <svg width="560" height="560" viewBox="104 200 560 560" overflow="hidden">
+                <image href="assets/ideas-references/animation.png" width="1379" height="2397"></image>
+              </svg>
+            </svg>
+            <h3>LEGO · Где искать номер</h3>
+            <p>Рамка показывает номер на&nbsp;упаковке.</p>
+          </li>
+          <li class="ideas-animation-card">
+            <svg class="ideas-animation-preview" viewBox="0 0 560 560" aria-hidden="true">
+              <svg width="560" height="560" viewBox="712 200 560 560" overflow="hidden">
+                <image href="assets/ideas-references/animation.png" width="1379" height="2397"></image>
+              </svg>
+            </svg>
+            <h3>IntoWallet · Световой фокус</h3>
+            <p>Маска выделяет одну область карточки.</p>
+          </li>
+          <li class="ideas-animation-card">
+            <svg class="ideas-animation-preview" viewBox="0 0 560 560" aria-hidden="true">
+              <svg width="560" height="560" viewBox="104 908 560 560" overflow="hidden">
+                <image href="assets/ideas-references/animation.png" width="1379" height="2397"></image>
+              </svg>
+            </svg>
+            <h3>Airbnb · Скан документа</h3>
+            <p>Наклон и&nbsp;перелив показывают материал.</p>
+          </li>
+          <li class="ideas-animation-card">
+            <svg class="ideas-animation-preview" viewBox="0 0 560 560" aria-hidden="true">
+              <svg width="560" height="560" viewBox="712 908 560 560" overflow="hidden">
+                <image href="assets/ideas-references/animation.png" width="1379" height="2397"></image>
+              </svg>
+            </svg>
+            <h3>!Camera · Зум по вкладкам</h3>
+            <p>Камера приближает детали 3D-объекта.</p>
+          </li>
+          <li class="ideas-animation-card">
+            <svg class="ideas-animation-preview" viewBox="0 0 560 560" aria-hidden="true">
+              <svg width="560" height="560" viewBox="104 1616 560 560" overflow="hidden">
+                <image href="assets/ideas-references/animation.png" width="1379" height="2397"></image>
+              </svg>
+            </svg>
+            <h3>Mileways · Переворот</h3>
+            <p>Билет поворачивается вокруг оси.</p>
+          </li>
+          <li class="ideas-animation-card">
+            <svg class="ideas-animation-preview" viewBox="0 0 560 560" aria-hidden="true">
+              <svg width="560" height="560" viewBox="712 1616 560 560" overflow="hidden">
+                <image href="assets/ideas-references/animation.png" width="1379" height="2397"></image>
+              </svg>
+            </svg>
+            <h3>Waymo · Волна вокруг авто</h3>
+            <p>Импульс привлекает взгляд к&nbsp;машине.</p>
+          </li>
+        </ul>
+      </section>
+      <div class="ideas-reference-detail" data-reference-block="haptics" style="--block-x: 1635" aria-hidden="true">
+        <img src="assets/ideas-references/haptics.png" alt="">
+      </div>
+      <div class="ideas-reference-detail" data-reference-block="scroll" style="--block-x: 3054" aria-hidden="true">
+        <img src="assets/ideas-references/scroll.png" alt="">
+      </div>
+      <div class="ideas-reference-detail" data-reference-block="easter-eggs" style="--block-x: 4473" aria-hidden="true">
+        <img src="assets/ideas-references/easter-eggs.png" alt="">
+      </div>
+    </div>
+  </template>
+  <template id="airbnb-reference-slide">
+    <section class="airbnb-reference" aria-label="Референс Airbnb на 60fps">
+      <h1>60fps.design</h1>
+      <div class="airbnb-reference-window">
+        <img class="airbnb-reference-header" src="assets/ideas-references/airbnb-60fps-header.jpg?v=2" alt="">
+        <figure class="airbnb-reference-shot">
+          <video src="assets/ideas-references/airbnb-verification.mp4" poster="assets/ideas-references/airbnb-verification-poster.jpg"
+            width="800" height="800" muted playsinline preload="auto" disablepictureinpicture aria-label="Анимация карты верификации Airbnb"></video>
+          <span class="airbnb-reference-copy-link" lang="en">Copy link</span>
+          <span class="airbnb-reference-copy-prompt" lang="en">Copy prompt</span>
+        </figure>
+      </div>
+    </section>
+  </template>
+  <template id="foundation-examples-slide">
+    <h1 class="foundation-title">Брать за&nbsp;основу то,<br>что уже есть</h1>
+    <div class="foundation-examples">
+      <figure>
+        <div class="foundation-example">
+          <video src="assets/ideas-references/airbnb-verification.mp4" poster="assets/ideas-references/airbnb-verification-poster.jpg"
+            muted playsinline preload="auto" disablepictureinpicture aria-label="Референс Airbnb"></video>
+        </div>
+      </figure>
+      <figure>
+        <div class="foundation-example foundation-vin-slot" data-vin-slot></div>
+      </figure>
+    </div>
+  </template>
+  <template id="resource-board-slide">
+    <div class="resource-board">
+      <header class="resource-board-title" data-resource-focus="">
+        <h1>Где смотреть анимации</h1>
+      </header>
+    </div>
+  </template>
+  <template id="telegram-qr-slide">
+    <section class="telegram-qr" aria-labelledby="telegram-qr-title">
+      <h1 id="telegram-qr-title">Бот с&nbsp;материалами и&nbsp;ссылками</h1>
+      <a class="qr-card" href="https://t.me/Save_mosolov_links_bot" target="_blank" rel="noopener noreferrer" aria-label="Бот с материалами в Telegram">
+        <span class="qr-card-code"><img src="assets/telegram-qr/contacts-bot.png" alt="" width="520" height="520"></span>
+      </a>
+    </section>
+  </template>
+  <template id="codex-window-slide">
+    <section class="codex-window" aria-label="Плеер анимации в приложении Codex">
+      <header class="codex-window-title">
+        <span class="codex-window-lights" aria-hidden="true"><i></i><i></i><i></i></span>
+        Codex
+      </header>
+      <div class="codex-window-capture">
+        <img src="assets/slides/5462-135.png" alt="Чат Codex слева, список версий и плеер VIN справа">
+      </div>
+    </section>
+  </template>
+  <template id="iteration-count-slide">
+    <div class="iteration-count" role="img" aria-label="47 итераций">
+      <div class="iteration-count-reel" aria-hidden="true"></div>
+    </div>
+  </template>
+  <template id="iteration-prompt-slide">
+    <div class="iteration-example">
+      <div class="iteration-meme" aria-hidden="true"></div>
+      <div class="iteration-input">
+        <p aria-hidden="true"><span class="iteration-typed-text"></span><span class="iteration-caret"></span></p>
+      </div>
+    </div>
+  </template>
+  <template id="thinking-film-slide">
+    <div class="thinking-film" aria-hidden="true">
+      <div class="thinking-film-track">
+        <div class="thinking-film-group"><i></i><i></i><i></i></div>
+        <div class="thinking-film-group"><i></i><i></i><i></i></div>
+        <div class="thinking-film-group"><i></i><i></i><i></i></div>
+      </div>
+    </div>
+  </template>
+  <template id="contacts-slide">
+    <section class="contacts-qr" aria-label="Канал и бот в Telegram">
+      <a class="qr-card" href="https://clck.ru/3MMG27" target="_blank" rel="noopener noreferrer">
+        <span class="qr-card-code"><img src="assets/telegram-qr/contacts-channel.png" alt="" width="520" height="520"></span>
+        <span>Уютный ТГ</span>
+      </a>
+      <a class="qr-card" href="https://t.me/Save_mosolov_links_bot" target="_blank" rel="noopener noreferrer">
+        <span class="qr-card-code"><img src="assets/telegram-qr/contacts-bot.png" alt="" width="520" height="520"></span>
+        <span>Бот с&nbsp;материалами</span>
+      </a>
+    </section>
+  </template>
+  <template id="vin-player-slide">
+    <iframe class="deck-vin-player" src="assets/vin-player/index.html?view=deck&amp;v=3" title="Интерактивный плеер VIN"></iframe>
+  </template>
+  <template id="motion-dictionary-slide">
+    <iframe class="deck-motion-dictionary" src="assets/motion-dictionary/index.html?v=4&amp;view=deck&amp;autoscroll=0" title="Словарь движений" allow="clipboard-write"></iframe>
+  </template>
+  <template id="deck-vin-phone">
+    <section class="deck-vin" aria-label="Демо поиска VIN и номеров автомобиля">
+      <div class="vin-preview-hardware" aria-hidden="true">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <div class="vin-preview-screen">
+        <div class="vin-preview-status" aria-hidden="true">
+          <img src="assets/slide-10/status.svg" alt="">
+        </div>
+        <section class="vin-preview-sheet" aria-label="Где найти номер">
+          <div class="vin-preview-grip" aria-hidden="true"></div>
+          <div class="vin-preview-content">
+            <h2>Где найти номер</h2>
+            <div class="vin-preview-numbers" role="group" aria-label="Вид номера">
+              <button type="button" data-number="vin" aria-pressed="true">VIN</button>
+              <button type="button" data-number="body" aria-pressed="false">Номер кузова</button>
+              <button type="button" data-number="frame" aria-pressed="false">Номер шасси</button>
+            </div>
+            <div class="vin-preview-animation">
+              <div class="vin-preview-motion"></div>
+              <div class="vin-preview-sources" role="group" aria-label="Где искать номер">
+                <button type="button" data-source="document" aria-label="В документах" aria-pressed="true"><img src="assets/slide-10/document.svg" alt=""></button>
+                <button type="button" data-source="vehicle" aria-label="На автомобиле" aria-pressed="false"><img src="assets/slide-10/vehicle.svg" alt=""></button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </template>
+  <div id="status" class="sr-only" role="status"></div>
+  <noscript>Включите JavaScript, чтобы листать слайды.</noscript>
+</body>
+</html>

@@ -1,0 +1,313 @@
+@font-face {
+  font-family: "Deck CoFo Avito";
+  src: url("cofo-regular.otf") format("opentype");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Deck CoFo Avito";
+  src: url("cofo-bold.otf") format("opentype");
+  font-weight: 700;
+  font-display: swap;
+}
+
+.animation-flow {
+  position: absolute;
+  inset: 0;
+  color: #fff;
+  font: 32px / 40px "Deck Aeroport Mono", monospace;
+}
+
+.animation-flow .approach-steps {
+  left: 50px;
+  grid-template-columns: repeat(3, 440px);
+  column-gap: 174px;
+  text-transform: uppercase;
+}
+
+.animation-flow .flow-top { top: 204px; }
+.animation-flow .flow-bottom { top: 722px; }
+.animation-flow .flow-bottom h2 { white-space: nowrap; }
+.animation-flow .flow-line-top { left: 66px; top: 219px; width: 1854px; }
+.animation-flow .flow-line-bottom { left: 0; top: 737px; width: 1293px; }
+
+.flow-line-bottom::after {
+  position: absolute;
+  top: -15px;
+  right: -16px;
+  width: 32px;
+  height: 32px;
+  background: #5b5b5a;
+  content: "";
+}
+
+#camera.camera-moving .animation-flow > :is(.approach-steps, .approach-line) {
+  transition: opacity 260ms ease-out, transform 560ms cubic-bezier(.22, .75, .22, 1);
+}
+
+#build-content[data-focus="vin"] .animation-flow > :is(.approach-steps, .flow-line-top) { opacity: 0; }
+#build-content[data-focus="vin"] .flow-line-bottom { transform: translateY(-76px); }
+
+@media (prefers-reduced-motion: reduce) {
+  #camera.camera-moving .animation-flow > :is(.approach-steps, .approach-line) { transition: none; }
+}
+
+.flow-vin-slot {
+  position: absolute;
+  top: 556px;
+  left: 1388px;
+}
+
+.deck-vin {
+  position: absolute;
+  width: 375px;
+  height: 812px;
+  color: #f5f5f5;
+  font: 15px / 20px "Deck CoFo Avito", sans-serif;
+  transform-origin: top left;
+}
+
+.flow-vin-slot .deck-vin {
+  transform: scale(.72);
+}
+
+.deck-vin::before {
+  position: absolute;
+  inset: -9px;
+  border-radius: 48px;
+  background: linear-gradient(133deg, #e1e2df, #828987 10%, #333837 27%, #777c79 46%, #393b3b 65%, #747876 87%, #b3b8b5);
+  box-shadow: 0 0 0 1px #131514, inset 0 0 0 1px rgb(255 255 255 / 42%), inset 0 0 0 3px rgb(0 0 0 / 26%), 20px 26px 46px rgb(0 0 0 / 42%);
+  content: "";
+}
+
+.vin-preview-hardware {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.vin-preview-hardware span {
+  position: absolute;
+  left: -11px;
+  width: 4px;
+  border-radius: 2px 0 0 2px;
+  background: linear-gradient(90deg, #151918, #9b9f9c 55%, #454947);
+}
+
+.vin-preview-hardware span:nth-child(1) { top: 84px; height: 22px; }
+.vin-preview-hardware span:nth-child(2) { top: 124px; height: 38px; }
+.vin-preview-hardware span:nth-child(3) { top: 176px; height: 38px; }
+.vin-preview-hardware span:nth-child(4) {
+  top: 136px;
+  right: -11px;
+  left: auto;
+  height: 64px;
+  border-radius: 0 2px 2px 0;
+  transform: scaleX(-1);
+}
+
+.vin-preview-screen {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 40px;
+  background: #080809;
+  box-shadow: 0 0 0 2px #121413, inset 0 0 0 1px #303332;
+}
+
+.vin-preview-screen::after {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 3px #0c0d0d;
+  pointer-events: none;
+  content: "";
+}
+
+.vin-preview-status {
+  position: absolute;
+  inset: 8px 0 auto;
+  height: 24px;
+}
+
+.vin-preview-status img {
+  position: absolute;
+  right: -4px;
+  top: 5px;
+  width: 139px;
+  height: 13px;
+  filter: invert(1);
+  opacity: .8;
+}
+
+.vin-preview-status::after {
+  position: absolute;
+  left: 50%;
+  width: 96px;
+  height: 22px;
+  border-radius: 12px;
+  background: radial-gradient(circle at 87% 50%, #23333d 1%, #090e15 3%, #020303 7%, #000 11%);
+  box-shadow: inset 0 1px 1px #222525, 0 0 0 1px #171919;
+  transform: translateX(-50%);
+  content: "";
+}
+
+.vin-preview-sheet {
+  position: absolute;
+  inset: 40px 0 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 28px 28px 0 0;
+  background: #151515;
+  animation: deck-vin-rise 340ms cubic-bezier(.22,.8,.25,1) both;
+}
+
+@keyframes deck-vin-rise { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .vin-preview-sheet { animation: none; } }
+
+.vin-preview-grip {
+  width: 40px;
+  height: 4px;
+  margin: 8px auto 0;
+  border-radius: 4px;
+  background: #363635;
+}
+
+.vin-preview-content { display: grid; gap: 16px; margin: 24px 16px 0; }
+
+.vin-preview-content h2 {
+  margin: 0;
+  font: 700 26px / 30px "Deck CoFo Avito", sans-serif;
+}
+
+.vin-preview-numbers { display: flex; gap: 4px; }
+.deck-vin button {
+  border: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.deck-vin button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.vin-preview-numbers button {
+  height: 44px;
+  flex: none;
+  padding: 0 12px;
+  border-radius: 12px;
+  background: #2a2928;
+  white-space: nowrap;
+}
+
+.vin-preview-numbers button[aria-pressed=true] { box-shadow: inset 0 0 0 2px #f5f5f5; }
+
+.vin-preview-animation {
+  position: relative;
+  height: 304px;
+  overflow: hidden;
+  border-radius: 24px;
+  background: #252729;
+}
+
+.vin-preview-motion { position: absolute; inset: 0; }
+
+.vin-preview-sources {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  display: flex;
+  padding: 4px;
+  border-radius: 12px;
+  background: #36393bec;
+  backdrop-filter: blur(12px);
+}
+
+.vin-preview-sources button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 8px;
+  background: transparent;
+}
+
+.vin-preview-sources button[aria-pressed=true] { background: #555c60; }
+.vin-preview-sources img { width: 20px; height: 20px; filter: invert(1); }
+
+.vin-comparison { position: absolute; inset: 0; }
+
+.vin-comparison-panel,
+.vin-comparison-label {
+  position: absolute;
+  width: 731px;
+}
+
+.vin-comparison-panel {
+  top: 225px;
+  height: 602px;
+  overflow: hidden;
+  border-radius: 32px;
+  background: #252729;
+}
+
+.vin-comparison-reference,
+.vin-comparison-label-reference { left: 178px; }
+
+.vin-comparison-rebuild,
+.vin-comparison-label-rebuild { left: 1006px; }
+
+.vin-comparison-reference { background: #fff; }
+
+.vin-comparison-replay {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.vin-comparison-replay:focus-visible {
+  outline: 3px solid #78a7ff;
+  outline-offset: -5px;
+}
+
+.vin-comparison-reference video {
+  position: absolute;
+  top: -32px;
+  left: -25px;
+  width: 782px;
+  height: 782px;
+}
+
+.vin-comparison-vin {
+  position: absolute;
+  top: 45px;
+  left: 142px;
+  width: 448px;
+  height: 970px;
+  pointer-events: none;
+}
+
+.vin-comparison-vin .deck-vin button { pointer-events: auto; }
+
+.vin-comparison-still { display: block; width: 100%; height: 100%; object-fit: cover; }
+.vin-comparison-vin[data-live] .vin-comparison-still { visibility: hidden; }
+
+.vin-comparison-vin .deck-vin {
+  top: 10px;
+  left: 10px;
+  transform: scale(1.14);
+}
+
+.vin-comparison-label {
+  top: 885px;
+  margin: 0;
+  color: #fff;
+  font: 40px / 48px "Deck Aeroport Mono", monospace;
+  text-align: center;
+  text-transform: uppercase;
+}

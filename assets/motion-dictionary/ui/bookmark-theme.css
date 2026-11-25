@@ -1,0 +1,25 @@
+/* Reused from the owner's links.mosolov.dev source: Golos Text and dark tokens.
+   Light tokens adapt the same neutral hierarchy; no animation scene styles here. */
+@font-face{font-family:'Golos Text';src:url('./assets/GolosText-Regular.ttf') format('truetype');font-weight:400;font-display:swap}
+@font-face{font-family:'Golos Text';src:url('./assets/GolosText-Medium.ttf') format('truetype');font-weight:500;font-display:swap}
+:root{
+  color-scheme:light;
+  font-family:'Golos Text',sans-serif;font-size:14px;font-weight:400;line-height:20px;
+  --surface:#fff;--ink:#242724;--muted:#6a6e68;--line:#dedfdb;
+  --subtle:#f3f4f1;--tab:#eef0ec;--hover:#e7eae4;--selected:#dde1d9;
+  --bg:var(--surface);--text:var(--ink);--panel:var(--subtle);--stage:var(--subtle);
+  --input-line:var(--line);--accent:#70776c;--focus:var(--ink);--screen:var(--surface);
+  --dot:#d9ddd4;--inverse:#fff;
+}
+:root[data-theme=dark]{
+  color-scheme:dark;
+  --surface:#191a1b;--ink:#eeefeb;--muted:#a6a8a2;--line:#3d4041;
+  --subtle:#252729;--tab:#292b2d;--hover:#36393b;--selected:#45484a;
+  --bg:var(--surface);--text:var(--ink);--panel:var(--subtle);--stage:var(--subtle);
+  --input-line:var(--line);--accent:#a6a8a2;--focus:var(--ink);--screen:var(--surface);
+  --dot:#35383a;--inverse:#191a1b;
+}
+body{font-family:'Golos Text',sans-serif;font-weight:400;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:inherit}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+@media(prefers-reduced-motion:no-preference){button{transition:background-color 180ms ease,color 180ms ease,border-color 180ms ease}}
