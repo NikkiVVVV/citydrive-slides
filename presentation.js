@@ -16,6 +16,47 @@
   let vinComparison = null;
   let stopIntro = null;
 
+  const imageAssets = slides.map(({ image, build }) => {
+    const template = build?.templateId ? document.getElementById(build.templateId) : null;
+    const images = template?.content.querySelectorAll('img[src], video[poster]') ?? [];
+    const backgrounds = template?.dataset.preloadImages?.split(' ') ?? [];
+    return [
+      image,
+      build?.recording?.poster,
+      ...Array.from(images, element => element.getAttribute('src') ?? element.getAttribute('poster')),
+      ...backgrounds,
+    ].filter(Boolean);
+  });
+  const warmedImages = new Set();
+  let warmRequest = null;
+  let warmTimer = 0;
+
+  function scheduleImageWarmup() {
+    clearTimeout(warmTimer);
+    if (!warmRequest && !document.hidden) warmTimer = setTimeout(warmNextImage, 180);
+  }
+
+  function warmNextImage() {
+    const lead = navigator.connection?.saveData ? Math.min(2, slides.length - 1) : slides.length - 1;
+    for (let offset = 1; offset <= lead; offset++) {
+      const urls = imageAssets[(index + offset) % slides.length];
+      const url = urls.find(src => !warmedImages.has(src));
+      if (!url) continue;
+      const image = new Image();
+      image.fetchPriority = 'low';
+      image.decoding = 'async';
+      warmRequest = image;
+      warmedImages.add(url);
+      const settled = () => {
+        warmRequest = null;
+        scheduleImageWarmup();
+      };
+      image.onload = image.onerror = settled;
+      image.src = url;
+      return;
+    }
+  }
+
   function indexFromHash() {
     const match = /^#(\d+)$/.exec(location.hash);
     return match ? Math.max(0, Math.min(slides.length - 1, Number(match[1]) - 1)) : 0;
@@ -301,10 +342,7 @@
     if (location.hash !== hash) history.replaceState(null, '', hash);
 
     activeVideos().forEach(video => play(video));
-    for (const offset of [-1, 1]) {
-      const neighbor = slides[(index + offset + slides.length) % slides.length];
-      if (neighbor.image) new Image().src = neighbor.image;
-    }
+    scheduleImageWarmup();
     if (slides[index + 1]?.transition?.templateId === 'meme-transition') window.preloadDeckMemes();
   }
 
@@ -401,6 +439,7 @@
     if (!embed || embed.contentWindow !== event.source || event.data?.type !== type) return;
     handleDeckKey(new KeyboardEvent('keydown', { code: event.data.code }));
   });
+  document.addEventListener('visibilitychange', scheduleImageWarmup);
   window.addEventListener('resize', fit);
   window.addEventListener('hashchange', () => show(indexFromHash()));
   show(indexFromHash());

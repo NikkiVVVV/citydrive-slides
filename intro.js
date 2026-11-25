@@ -115,15 +115,17 @@
       if (!animation && !signal.aborted) animation = requestAnimationFrame(draw);
     }
 
-    function loadFrame(index) {
+    function loadFrame(index, priority = "auto") {
       if (index < 0 || index > lastFrame || frames[index]) return;
       const frame = new Image();
       frame.decoding = 'async';
+      frame.fetchPriority = priority;
       frame.addEventListener('load', () => {
         if (Math.abs(index - Math.round(displayed)) <= 2) queueDraw();
       }, { once: true, signal });
       frames[index] = frame;
       frame.src = `assets/slide-05/frames/${String(index).padStart(3, '0')}.webp`;
+      return frame;
     }
 
     function draw(time) {
@@ -136,7 +138,7 @@
 
       const index = Math.round(displayed);
       loadFrame(index);
-      for (let offset = -3; offset <= 10; offset++) loadFrame(index + offset);
+      for (let offset = -2; offset <= 4; offset++) loadFrame(index + offset, "low");
       const image = frames[index];
       const ratio = Math.min(devicePixelRatio || 1, 1.5);
       const bounds = canvas.getBoundingClientRect();
@@ -170,9 +172,12 @@
     }
 
     function preload() {
-      const end = Math.min(frameCount, nextPreload + 6);
-      for (; nextPreload < end; nextPreload++) loadFrame(nextPreload);
-      if (nextPreload < frameCount) preloadTimer = setTimeout(preload, 50);
+      while (nextPreload < frameCount && frames[nextPreload]) nextPreload++;
+      if (nextPreload >= frameCount) return;
+      const image = loadFrame(nextPreload++, 'low');
+      const queue = () => { preloadTimer = setTimeout(preload, 80); };
+      image.addEventListener('load', queue, { once: true, signal });
+      image.addEventListener('error', queue, { once: true, signal });
     }
 
     scroll.addEventListener('scroll', updateFrame, { passive: true, signal });

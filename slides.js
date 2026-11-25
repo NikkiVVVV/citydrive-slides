@@ -56,7 +56,7 @@ window.presentationSlides = [
     "title": "Реверс-инжиниринг креативов",
     "width": 1920,
     "height": 1080,
-    "image": "assets/slides/01.png",
+    "image": "assets/slides/01.webp",
     "build": { "templateId": "cover-credit-slide", "steps": [] }
   },
   {
@@ -137,7 +137,7 @@ window.presentationSlides = [
     "title": "Реверс-инжиниринг креативов",
     "width": 1920,
     "height": 1080,
-    "image": "assets/slides/01.png",
+    "image": "assets/slides/01.webp",
     "build": { "templateId": "cover-credit-slide", "steps": [] }
   },
   {
