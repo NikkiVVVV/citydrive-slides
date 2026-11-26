@@ -660,5 +660,6 @@
   });
   window.addEventListener('resize', fit);
   window.addEventListener('hashchange', () => goToSlide(indexFromHash()));
+  window.preloadDeckRecordings(slides.flatMap(({ build }) => build?.recording ?? []));
   show(indexFromHash());
 })();

@@ -238,6 +238,30 @@
     };
   }
 
+  const introRecordings = new Map();
+
+  function prepareRecording(recording) {
+    let video = introRecordings.get(recording.src);
+    if (video) return video;
+
+    const template = document.getElementById('intro-recording-slide');
+    video = template.content.querySelector('video').cloneNode();
+    video.muted = true;
+    video.poster = recording.poster;
+    video.src = recording.src;
+    introRecordings.set(recording.src, video);
+    return video;
+  }
+
+  window.preloadDeckRecordings = recordings => {
+    const buffer = document.getElementById('intro-recording-buffer');
+    for (const recording of recordings) {
+      const video = prepareRecording(recording);
+      buffer.append(video);
+      video.load();
+    }
+  };
+
   function stackWindows(front, previousRecordings, existingWindows) {
     const template = document.getElementById('intro-recording-slide');
     for (const [index, recording] of previousRecordings.slice(-2).reverse().entries()) {
@@ -251,7 +275,6 @@
       card.dataset.clip = recording.src;
       card.setAttribute('aria-hidden', 'true');
       video.dataset.held = '';
-      video.preload = 'none';
       video.poster = recording.poster;
       front.before(card);
     }
@@ -302,13 +325,14 @@
     const front = content.querySelector('.intro-window');
     if (!front) return null;
     stackWindows(front, previousRecordings, existingWindows);
-    const video = front.querySelector('.intro-recording');
-    if (video) {
+    const placeholder = front.querySelector('.intro-recording');
+    if (placeholder) {
       front.dataset.clip = build.recording.src;
       if (build.recording.raised) front.dataset.raised = '';
-      video.muted = true;
-      video.poster = build.recording.poster;
-      video.src = build.recording.src;
+      const video = prepareRecording(build.recording);
+      delete video.dataset.held;
+      if (video.currentTime !== 0) video.currentTime = 0;
+      placeholder.replaceWith(video);
     }
     const parts = front.querySelector('.intro-parts-scroll');
     return parts ? mountParts(parts, build.frameCount) : null;
