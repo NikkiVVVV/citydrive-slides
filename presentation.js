@@ -8,6 +8,8 @@
   const poster = document.querySelector('#poster');
   const media = document.querySelector('#media');
   const links = document.querySelector('#links');
+  const slideNumber = document.querySelector('#slide-number');
+  const slideMenu = document.querySelector('.slide-menu');
   const status = document.querySelector('#status');
   const activeVideos = () => [...slide.querySelectorAll('video:not([data-held])')];
   let index = 0;
@@ -15,6 +17,8 @@
   let vinDemo = null;
   let vinComparison = null;
   let stopIntro = null;
+  let terminalLogTimers = [];
+  let autoStepTimer = 0;
 
   const imageAssets = slides.map(({ image, build }) => {
     const template = build?.templateId ? document.getElementById(build.templateId) : null;
@@ -23,6 +27,7 @@
     return [
       image,
       build?.recording?.poster,
+      build?.comparison?.poster,
       ...Array.from(images, element => element.getAttribute('src') ?? element.getAttribute('poster')),
       ...backgrounds,
     ].filter(Boolean);
@@ -168,8 +173,10 @@
   }
 
   function play(video) {
-    return video.play().catch(() => {
-      status.textContent = 'Нажмите K, чтобы запустить видео.';
+    return video.play().catch(error => {
+      if (error.name !== 'AbortError' && video.isConnected) {
+        status.textContent = 'Нажмите K, чтобы запустить видео.';
+      }
     });
   }
 
@@ -217,6 +224,8 @@
   }
 
   function prepareBuild(build, resources) {
+    terminalLogTimers.forEach(clearTimeout);
+    terminalLogTimers = [];
     const existingWindows = new Map(
       [...buildContent.querySelectorAll('.intro-window[data-clip]')].map(window => [
         window.dataset.clip,
@@ -247,11 +256,20 @@
       stopIntro = mountIterationPrompt(example, build);
       return;
     }
+    const reference = build?.comparison ? buildContent.querySelector('.vin-comparison-reference video') : null;
+    if (reference) {
+      const { src, poster, description, label, fit } = build.comparison;
+      reference.src = src;
+      reference.poster = poster;
+      reference.setAttribute('aria-label', description);
+      if (fit) buildContent.querySelector('.vin-comparison').dataset.referenceFit = fit;
+      buildContent.querySelector('.vin-comparison-label-reference').textContent = label;
+      buildContent.querySelector('[data-comparison-replay="reference"]').setAttribute('aria-label', `Повторить: ${description}`);
+    }
     const vinSlot = buildContent.querySelector('[data-vin-slot]');
     if (vinSlot && window.mountDeckVin) {
       const phone = document.querySelector('#deck-vin-phone').content.firstElementChild.cloneNode(true);
       vinSlot.append(phone);
-      const reference = build.sequenceVin ? buildContent.querySelector('.vin-comparison-reference video') : null;
       if (reference) {
         let startVinOnEnd = true;
         const pauseReference = () => {
@@ -266,11 +284,16 @@
           }
         });
         vinDemo = demo;
+        const replayReference = () => {
+          startVinOnEnd = true;
+          demo.reset();
+          replayVideo(reference);
+        };
         vinComparison = {
-          replayReference() {
-            startVinOnEnd = true;
-            demo.reset();
-            replayVideo(reference);
+          replayReference,
+          resumeReference() {
+            if (startVinOnEnd && !reference.ended) play(reference);
+            else replayReference();
           },
           replayVin() {
             pauseReference();
@@ -290,6 +313,14 @@
     }
   }
 
+  function scheduleAutoStep(delay) {
+    clearTimeout(autoStepTimer);
+    const { autoStepInterval, steps } = slides[index].build ?? {};
+    if (!autoStepInterval || step >= steps.length || document.hidden) return;
+
+    autoStepTimer = setTimeout(() => showStep(step + 1, true), delay ?? autoStepInterval);
+  }
+
   function showStep(next, animate) {
     step = next;
     for (const layer of buildContent.querySelectorAll('[data-reveal-step]')) {
@@ -297,6 +328,15 @@
       if (visible === !layer.hidden) continue;
       layer.hidden = !visible;
       layer.classList.toggle('is-entering', visible && animate);
+      if (layer.classList.contains('ffmpeg-install')) {
+        terminalLogTimers.forEach(clearTimeout);
+        const revealLines = visible && animate && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+        terminalLogTimers = [];
+        for (const line of layer.querySelectorAll('[data-log-delay]')) {
+          line.hidden = revealLines;
+          if (revealLines) terminalLogTimers.push(setTimeout(() => { line.hidden = false; }, Number(line.dataset.logDelay)));
+        }
+      }
     }
     const current = slides[index];
     const shot = current.build?.steps[step - 1] ?? current.build?.overview;
@@ -315,12 +355,14 @@
     }
     const detail = shot?.label ? ` ${shot.label}.` : '';
     status.textContent = `${index + 1} из ${slides.length}. ${current.title}.${detail}`;
+    scheduleAutoStep(!animate && step === 0 ? 500 : undefined);
   }
 
   function show(next, fromEnd = false) {
     const previous = slides[index];
     index = (next + slides.length) % slides.length;
     const current = slides[index];
+    slideMenu.open = false;
     activeVideos().forEach(video => video.pause());
     media.replaceChildren(...(current.videos ?? []).map(makeVideo));
     links.replaceChildren(...(current.links ?? []).map(makeLink));
@@ -330,6 +372,7 @@
     poster.alt = current.title;
     slide.setAttribute('aria-label', `Слайд ${index + 1} из ${slides.length}`);
     slide.dataset.figmaId = current.figmaId;
+    slideNumber.textContent = `${index + 1} / ${slides.length}`;
     prepareBuild(current.build, current.resources);
     showStep(fromEnd ? (current.build?.steps.length ?? 0) : 0, false);
     fit();
@@ -370,14 +413,29 @@
       videos.forEach(video => video.pause());
       return;
     }
+    if (vinComparison) {
+      vinComparison.resumeReference();
+      return;
+    }
     videos.forEach(video => {
       if (video.ended) video.currentTime = 0;
       play(video);
     });
   }
 
+  for (const restart of document.querySelectorAll('[data-restart-deck]')) {
+    restart.addEventListener('click', () => {
+      show(0);
+      slide.focus({ preventScroll: true });
+    });
+  }
+
   presentation.addEventListener('click', event => {
-    if (event.button !== 0) return;
+    if (event.button !== 0 || event.target.closest('.slide-controls')) return;
+    if (slideMenu.open) {
+      slideMenu.open = false;
+      return;
+    }
     const replay = event.target.closest('[data-comparison-replay]');
     if (replay?.dataset.comparisonReplay === 'reference') {
       if (vinComparison) vinComparison.replayReference();
@@ -392,7 +450,13 @@
 
   function handleDeckKey(event) {
     if (event.metaKey || event.ctrlKey || event.altKey || event.target?.closest('a')) return;
-    if (event.code === 'Space' && event.target?.closest('button')) return;
+    if (event.code === 'Escape' && slideMenu.open) {
+      slideMenu.open = false;
+      slideMenu.querySelector('summary').focus();
+      event.preventDefault();
+      return;
+    }
+    if (event.code === 'Space' && event.target?.closest('button, summary')) return;
     switch (event.code) {
       case 'ArrowRight':
       case 'ArrowDown':
@@ -439,7 +503,10 @@
     if (!embed || embed.contentWindow !== event.source || event.data?.type !== type) return;
     handleDeckKey(new KeyboardEvent('keydown', { code: event.data.code }));
   });
-  document.addEventListener('visibilitychange', scheduleImageWarmup);
+  document.addEventListener('visibilitychange', () => {
+    scheduleImageWarmup();
+    scheduleAutoStep();
+  });
   window.addEventListener('resize', fit);
   window.addEventListener('hashchange', () => show(indexFromHash()));
   show(indexFromHash());

@@ -224,6 +224,53 @@
   to { transform: translateY(-12px) rotateX(180deg); }
 }
 
+.creative-ai-caption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 96px;
+  font: 56px / 64px "Deck Aeroport Mono", monospace;
+  text-transform: none;
+  animation: creative-ai-appear 280ms 2.48s ease-out both;
+}
+
+.creative-ai-marks {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  perspective: 280px;
+}
+
+.creative-ai-marks > * {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  object-fit: contain;
+}
+
+.creative-ai-first { animation: creative-ai-out 360ms 3.48s ease-in-out both; }
+.creative-ai-codex { animation: creative-ai-in 360ms 3.48s ease-in-out both, creative-ai-out 360ms 4.84s ease-in-out forwards; }
+.creative-ai-claude { animation: creative-ai-in 360ms 4.84s ease-in-out both, creative-ai-out 360ms 6.20s ease-in-out forwards; }
+.creative-ai-final { animation: creative-ai-in 360ms 6.20s ease-in-out both; }
+
+@keyframes creative-ai-appear {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes creative-ai-in {
+  0%, 45% { opacity: 0; transform: rotateX(85deg); }
+  100% { opacity: 1; transform: rotateX(0deg); }
+}
+
+@keyframes creative-ai-out {
+  0% { opacity: 1; transform: rotateX(0deg); }
+  55%, 100% { opacity: 0; transform: rotateX(-85deg); }
+}
+
 .pinned-transfer {
   position: absolute;
   inset: 0;
@@ -885,6 +932,8 @@
   .intro-badge, .intro-window[data-depth], .intro-window.is-retreating { animation: none; }
   .intro-photo::after { transition: none; }
   .creative-letter-turn { animation: none; transform: translateY(-12px) rotateX(180deg); }
+  .creative-ai-caption, .creative-ai-first { animation: none; }
+  .creative-ai-marks > :not(.creative-ai-first) { display: none; }
   .pinned-transfer :is(.pinned-transfer-origin, .pinned-transfer-target, .pinned-transfer-flight) { display: none; }
   .pinned-transfer-file { animation: none; }
   .eye-gaze-iris { transition: none; }

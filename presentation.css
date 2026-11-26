@@ -21,6 +21,111 @@ html, body {
   aspect-ratio: 16 / 9;
 }
 
+#frame::after {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 16%;
+  background: radial-gradient(ellipse 76% 100% at 50% 0%, rgb(226 237 255 / 11%), transparent);
+  opacity: .38;
+  pointer-events: none;
+  animation: slide-edge-glow 9.6s ease-in-out infinite;
+  content: "";
+}
+
+@keyframes slide-edge-glow {
+  0%, 100% { opacity: .28; }
+  32% { opacity: .72; }
+  62% { opacity: .4; }
+  78% { opacity: .55; }
+}
+
+.slide-controls {
+  --control-height: 28px;
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  pointer-events: none;
+}
+
+#slide-number, .slide-control {
+  border-radius: 6px;
+  background: rgb(0 0 0 / 80%);
+  color: #fff;
+}
+
+#slide-number {
+  padding: 4px 8px;
+  font: 14px / 20px ui-monospace, monospace;
+}
+
+.slide-control {
+  display: grid;
+  place-items: center;
+  width: var(--control-height);
+  height: var(--control-height);
+  padding: 0;
+  border: 0;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.slide-control:hover { background: #303030; }
+.slide-controls :is(button, summary):focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+.slide-menu { position: relative; display: none; }
+:root[data-deck-view="public"] :is(#slide-number, #restart-deck) { display: none; }
+:root[data-deck-view="public"] .slide-menu { display: block; }
+
+.slide-menu summary {
+  list-style: none;
+  border-radius: 50%;
+  background: rgb(20 20 20 / 84%);
+  color: #d2d2d2;
+  transition: background-color 180ms ease-out, color 180ms ease-out;
+}
+
+.slide-menu summary::-webkit-details-marker { display: none; }
+.slide-menu summary svg { transition: transform 180ms ease-out; }
+.slide-menu[open] summary,
+.slide-menu summary:hover { background: #333; color: #fff; }
+.slide-menu summary:hover svg { transform: scale(1.14); }
+
+.slide-menu-panel {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  padding: 4px;
+  border: 1px solid #363636;
+  border-radius: 10px;
+  background: #1e1e1e;
+  box-shadow: 0 6px 20px rgb(0 0 0 / 28%);
+  pointer-events: auto;
+}
+
+.slide-menu-panel button {
+  height: var(--control-height);
+  padding: 0 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #fff;
+  font: 14px / 20px system-ui, sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.slide-menu-panel button:hover { background: #343434; }
+
+@media (prefers-reduced-motion: reduce) {
+  #frame::after { animation: none; }
+  .slide-menu summary, .slide-menu summary svg { transition: none; }
+  .slide-menu summary:hover svg { transform: none; }
+}
+
 #slide {
   position: absolute;
   inset: 0 auto auto 0;
@@ -297,18 +402,6 @@ html, body {
   outline-offset: 5px;
 }
 
-#slide[data-figma-id="local:auction-chat"] { background: #141413; }
-
-#slide[data-figma-id="local:auction-chat"] #poster {
-  inset: 24px auto auto 50%;
-  width: 1256px;
-  height: 1048px;
-  transform: translateX(-50%);
-  object-fit: fill;
-  border: 2px solid #505254;
-  border-radius: 12px;
-}
-
 #slide[data-figma-id="5480:894"] { background: #141413; }
 
 #slide[data-figma-id="5480:894"] #poster {
@@ -567,6 +660,17 @@ html, body {
   gap: 24px;
 }
 
+#build-content[data-focus="mcp-first-three"] .mcp-breakdown-copy > div:nth-child(n + 4),
+#build-content[data-focus="mcp-last-three"] .mcp-breakdown-copy > div:nth-child(-n + 3) {
+  opacity: .2;
+}
+
+#build-content[data-focus="mcp-animation"] .mcp-breakdown-copy > div { opacity: 0; }
+
+@media (prefers-reduced-motion: no-preference) {
+  #camera.camera-moving .mcp-breakdown-copy > div { transition: opacity 260ms ease-out; }
+}
+
 .mcp-breakdown-copy dt {
   color: #aaa9a6;
   text-transform: uppercase;
@@ -678,25 +782,6 @@ html, body {
   cursor: pointer;
 }
 
-.reference-takeaway {
-  position: absolute;
-  top: 390px;
-  left: 44px;
-  width: 840px;
-  min-height: 220px;
-  background: #141413;
-  color: #cac9c6;
-  font: 32px / 40px "Deck Aeroport Mono", monospace;
-  text-transform: uppercase;
-}
-
-.reference-takeaway h1 {
-  margin: 0 0 20px;
-  font: 52px / 55px "Deck Aeroport Mono", monospace;
-}
-
-.reference-takeaway p { margin: 0; color: #fff; }
-
 .deck-vin-player {
   position: absolute;
   inset: 0;
@@ -736,6 +821,57 @@ html, body {
 .codex-window-lights i { width: 16px; height: 16px; border-radius: 50%; background: #ff5f57; }
 .codex-window-lights i:nth-child(2) { background: #febc2e; }
 .codex-window-lights i:nth-child(3) { background: #28c840; }
+
+.ffmpeg-title-art {
+  position: absolute;
+  inset: 0;
+}
+
+.camera-moving .ffmpeg-title-art { transition: transform 400ms cubic-bezier(.22,.75,.22,1); }
+#build-content[data-focus="ffmpeg-install"] .ffmpeg-title-art { transform: translateY(-112px); }
+
+.ffmpeg-install {
+  position: absolute;
+  top: 552px;
+  inset-inline: 0;
+  width: 1584px;
+  min-height: 620px;
+  margin-inline: auto;
+  overflow: hidden;
+  border: 1px solid #454648;
+  border-radius: 20px;
+  background: #212223;
+  box-shadow: 0 16px 56px rgb(0 0 0 / 24%);
+}
+
+.ffmpeg-install.is-entering { animation: ffmpeg-install-in 400ms cubic-bezier(.22,.75,.22,1) both; }
+
+.ffmpeg-install .codex-window-title {
+  height: 56px;
+  background: #2b2c2d;
+  font-size: 24px;
+}
+
+.ffmpeg-log {
+  padding: 32px 48px;
+  color: #d4d7d6;
+  font: 32px / 48px ui-monospace, Menlo, monospace;
+}
+
+.ffmpeg-log p { margin: 0; }
+.ffmpeg-log b, .ffmpeg-command span { color: #8bc5a4; }
+.ffmpeg-command { color: #fff; }
+.ffmpeg-command code { font: inherit; }
+@keyframes ffmpeg-install-in {
+  from { opacity: 0; transform: translateY(32px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .camera-moving .ffmpeg-title-art { transition: none; }
+  .ffmpeg-install.is-entering { animation: none; }
+}
+
 .codex-window-capture { position: relative; overflow: hidden; }
 
 .codex-window-capture img {
@@ -744,6 +880,39 @@ html, body {
   left: -756px;
   width: 3104px;
   max-width: none;
+}
+
+.codex-context-window {
+  --window-offset: 0px;
+  inset: 100px 328px auto;
+  height: 1088px;
+  border-radius: 24px 24px 0 0;
+  animation: intro-window-in 760ms cubic-bezier(.24, .84, .28, 1) both;
+}
+
+.codex-context-window .codex-window-lights { left: auto; right: 24px; }
+
+.codex-context-window .codex-window-lights i {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  color: #282321;
+  font: 700 14px / 1 system-ui, sans-serif;
+}
+
+.codex-context-window .codex-window-lights i:first-child { background: #28c840; }
+.codex-context-window .codex-window-lights i:last-child { background: #ff5f57; }
+
+.codex-context-window .codex-window-capture img {
+  position: static;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .codex-context-window { animation: none; }
 }
 
 .iteration-count {
@@ -831,32 +1000,35 @@ html, body {
 .iteration-caret { display: inline-block; width: 3px; height: 1em; vertical-align: -.12em; background: #fff; }
 .is-typed .iteration-caret { visibility: hidden; }
 
-.foundation-title {
+.conclusion {
   position: absolute;
-  top: 50%;
-  left: 48px;
+  inset: 120px 64px 52px;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  justify-items: center;
+  gap: 40px;
+}
+
+.conclusion-title {
   margin: 0;
-  transform: translateY(-50%);
-  color: #f8f6f2;
+  color: #fff;
   font: 52px / 56px "Deck Aeroport Mono", monospace;
+  text-align: center;
+  text-wrap: balance;
   text-transform: uppercase;
 }
 
 .foundation-examples {
-  position: absolute;
-  inset: 0 0 0 920px;
   display: grid;
-  grid-template-columns: 656px;
-  place-content: center;
+  width: 1680px;
+  height: min(100%, 808px);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-self: center;
   gap: 24px;
-  background: #141413;
 }
-
-.foundation-examples figure { margin: 0; }
 
 .foundation-example {
   position: relative;
-  height: 488px;
   overflow: hidden;
   border-radius: 40px;
   background: #232425;
@@ -871,47 +1043,115 @@ html, body {
 }
 
 .foundation-vin-slot .deck-vin {
-  top: 16px;
+  top: 176px;
   left: 50%;
-  transform: translateX(-50%) scale(.64);
+  transform: translateX(-50%) scale(1.18);
   transform-origin: top center;
 }
 
-.thinking-film {
-  position: absolute;
-  inset: 0 auto 0 1336px;
-  width: 304px;
+.conclusion-reference-examples {
   display: grid;
-  justify-items: center;
+  width: 1680px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-self: center;
+  gap: 24px;
+  color: #fff;
+}
+
+.conclusion-reference-examples figure { margin: 0; }
+
+.conclusion-reference-examples img {
+  display: block;
+  width: 100%;
+  height: 356px;
+  object-fit: cover;
+  border-radius: 24px;
+}
+
+.conclusion-reference-examples figcaption {
+  margin-top: 20px;
+  font: 28px / 36px "Deck Aeroport Mono", monospace;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.thinking-film {
+  width: 1680px;
+  align-self: center;
   overflow: hidden;
-  background: #141413;
+  border-radius: 16px;
 }
 
 .thinking-film-track {
-  align-self: start;
-  width: 232px;
-  border-inline: 1px solid #343434;
+  display: flex;
+  width: max-content;
+  border-block: 1px solid #343434;
   background:
-    repeating-linear-gradient(#141413 0 12px, transparent 12px 30px) 8px 0 / 8px 100% no-repeat,
-    repeating-linear-gradient(#141413 0 12px, transparent 12px 30px) calc(100% - 8px) 0 / 8px 100% no-repeat,
+    repeating-linear-gradient(90deg, #141413 0 16px, transparent 16px 36px) 0 12px / 100% 12px no-repeat,
+    repeating-linear-gradient(90deg, #141413 0 16px, transparent 16px 36px) 0 calc(100% - 12px) / 100% 12px no-repeat,
     #242424;
   animation: thinking-film-roll 23s linear infinite;
 }
 
-.thinking-film-group { display: grid; justify-items: center; }
-.thinking-film-group i {
-  width: 165px;
-  height: 204px;
-  margin-block: 18px;
-  background: url("assets/slides/42.png") -1404px -190px / 1920px 1080px no-repeat;
+.thinking-film-group {
+  display: flex;
+  flex: none;
+  gap: 32px;
+  padding: 40px 32px 40px 0;
 }
 
-.thinking-film-group i:nth-child(2) { background-position-y: -434px; }
-.thinking-film-group i:nth-child(3) { background-position-y: -678px; }
+.thinking-film-group i {
+  width: 412px;
+  height: 508px;
+  background: url("assets/slides/42.png") -3510px -475px / 4800px 2700px no-repeat;
+}
+
+.thinking-film-group i:nth-child(2) { background-position-y: -1085px; }
+.thinking-film-group i:nth-child(3) { background-position-y: -1695px; }
 
 @keyframes thinking-film-roll {
-  from { transform: translateY(calc(-100% / 3)); }
-  to { transform: translateY(0); }
+  to { transform: translateX(calc(-100% / 3)); }
+}
+
+.claude-artifact-window {
+  --window-offset: 0px;
+  width: 1392px;
+  align-self: start;
+  translate: 0 40px;
+  overflow: hidden;
+  border-radius: 24px;
+  background: #181818;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 10%), 0 24px 64px rgb(0 0 0 / 24%);
+  animation: intro-window-in 760ms cubic-bezier(.24, .84, .28, 1) both;
+}
+
+.claude-artifact-bar {
+  position: relative;
+  display: grid;
+  height: 48px;
+  place-items: center;
+  background: #303030;
+}
+
+.claude-artifact-bar a {
+  display: grid;
+  width: 528px;
+  height: 32px;
+  place-items: center;
+  border-radius: 8px;
+  background: #414141;
+  color: #fff;
+  font: 18px / 24px system-ui, sans-serif;
+  text-decoration: none;
+}
+
+.claude-artifact-bar a:hover { background: #505050; }
+.claude-artifact-bar a:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+.claude-artifact-window video {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .contacts-qr .qr-card-code::after {
@@ -923,7 +1163,7 @@ html, body {
   content: "";
 }
 
-.contacts-qr .qr-card:nth-child(2) .qr-card-code::after { animation-delay: 1.15s; }
+.contacts-qr .qr-card:nth-child(2) .qr-card-code::after { animation-delay: 2.9s; }
 
 @keyframes contacts-glare {
   0% { transform: translateX(-100%); }
@@ -931,7 +1171,7 @@ html, body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .iteration-count-reel, .thinking-film-track, .contacts-qr .qr-card-code::after, .deck-motion-dictionary { animation: none; }
+  .iteration-count-reel, .thinking-film-track, .claude-artifact-window, .contacts-qr .qr-card-code::after, .deck-motion-dictionary { animation: none; }
   .contacts-qr .qr-card-code::after { display: none; }
   .iteration-meme { transition: none; }
 }

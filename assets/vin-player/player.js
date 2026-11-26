@@ -1,5 +1,6 @@
 (() => {
-  if (new URLSearchParams(location.search).get('view') === 'deck') {
+  const deckLayout = new URLSearchParams(location.search).get('view') === 'deck';
+  if (deckLayout) {
     document.documentElement.dataset.layout = 'deck';
     document.querySelector('.player-versions').hidden = false;
   }
@@ -29,6 +30,12 @@
 
   function mark(buttons, selected) {
     for (const button of buttons) button.setAttribute('aria-pressed', String(selected(button)));
+  }
+
+  function setMode(mode) {
+    stage.dataset.view = mode;
+    mockup.hidden = mode !== 'mockup';
+    mark(modes, button => button.dataset.mode === mode);
   }
 
   function render(time) {
@@ -74,11 +81,7 @@
     setPlaying(false);
     render(Number(button.dataset.time));
   });
-  for (const button of modes) button.addEventListener('click', () => {
-    stage.dataset.view = button.dataset.mode;
-    mockup.hidden = button.dataset.mode !== 'mockup';
-    mark(modes, entry => entry === button);
-  });
+  for (const button of modes) button.addEventListener('click', () => setMode(button.dataset.mode));
   for (const button of themes) button.addEventListener('click', () => {
     document.documentElement.dataset.theme = button.dataset.themeOption;
     scene.setSceneTheme(button.dataset.themeOption);
@@ -99,5 +102,6 @@
     }
   });
 
+  if (deckLayout) setMode('mockup');
   render(0);
 })();

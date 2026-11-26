@@ -110,6 +110,12 @@
     let animation = 0;
     let preloadTimer = 0;
     let nextPreload = 1;
+    const scrollCycle = 18000;
+    const fullTurn = Math.PI * 2;
+    let scrollAngle = 0;
+    let autoScrollFrame = 0;
+    let lastScrollTime;
+    let resumeScrollAt = performance.now() + 760;
 
     function queueDraw() {
       if (!animation && !signal.aborted) animation = requestAnimationFrame(draw);
@@ -171,6 +177,34 @@
       queueDraw();
     }
 
+    function scrollAutomatically(time) {
+      const range = scroll.scrollHeight - scroll.clientHeight;
+      if (time >= resumeScrollAt && range > 0) {
+        if (lastScrollTime === undefined) {
+          const position = Math.max(0, Math.min(1, scroll.scrollTop / range));
+          const angle = Math.acos(1 - position * 2);
+          scrollAngle = scrollAngle > Math.PI ? fullTurn - angle : angle;
+        } else {
+          const elapsed = Math.min(time - lastScrollTime, 50);
+          scrollAngle = (scrollAngle + elapsed * fullTurn / scrollCycle) % fullTurn;
+        }
+        scroll.scrollTop = range * (1 - Math.cos(scrollAngle)) / 2;
+        lastScrollTime = time;
+      }
+      autoScrollFrame = requestAnimationFrame(scrollAutomatically);
+    }
+
+    function letUserScroll() {
+      resumeScrollAt = performance.now() + 1800;
+      lastScrollTime = undefined;
+    }
+
+    function syncAutoScroll() {
+      cancelAnimationFrame(autoScrollFrame);
+      lastScrollTime = undefined;
+      if (!motion.matches) autoScrollFrame = requestAnimationFrame(scrollAutomatically);
+    }
+
     function preload() {
       while (nextPreload < frameCount && frames[nextPreload]) nextPreload++;
       if (nextPreload >= frameCount) return;
@@ -181,17 +215,25 @@
     }
 
     scroll.addEventListener('scroll', updateFrame, { passive: true, signal });
+    for (const eventType of ['wheel', 'touchstart', 'touchmove']) {
+      scroll.addEventListener(eventType, letUserScroll, { passive: true, signal });
+    }
     scroll.addEventListener('keydown', event => {
-      if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown'].includes(event.code)) event.stopPropagation();
+      if (!['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown'].includes(event.code)) return;
+      letUserScroll();
+      event.stopPropagation();
     }, { signal });
+    motion.addEventListener('change', syncAutoScroll, { signal });
     window.addEventListener('resize', queueDraw, { signal });
     scroll.closest('.intro-window').addEventListener('animationend', queueDraw, { signal });
     updateFrame();
     preloadTimer = setTimeout(preload, 50);
+    syncAutoScroll();
 
     return () => {
       controller.abort();
       cancelAnimationFrame(animation);
+      cancelAnimationFrame(autoScrollFrame);
       clearTimeout(preloadTimer);
     };
   }

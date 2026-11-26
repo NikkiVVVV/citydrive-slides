@@ -29,13 +29,14 @@
 .animation-flow .flow-top { top: 204px; }
 .animation-flow .flow-bottom { top: 722px; }
 .animation-flow .flow-bottom h2 { white-space: nowrap; }
-.animation-flow .flow-line-top { left: 66px; top: 219px; width: 1854px; }
-.animation-flow .flow-line-bottom { left: 0; top: 737px; width: 1293px; }
+.animation-flow .approach-line { left: -64px; width: 2272px; }
+.animation-flow .flow-line-top { top: 219px; }
+.animation-flow .flow-line-bottom { top: 737px; }
 
 .flow-line-bottom::after {
   position: absolute;
   top: -15px;
-  right: -16px;
+  left: 1341px;
   width: 32px;
   height: 32px;
   background: #5b5b5a;
@@ -282,6 +283,17 @@
   width: 782px;
   height: 782px;
 }
+
+.vin-comparison[data-reference-fit="contain"] .vin-comparison-reference { background: #000; }
+
+.vin-comparison[data-reference-fit] .vin-comparison-reference video {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.vin-comparison[data-reference-fit="cover"] .vin-comparison-reference video { object-fit: cover; }
 
 .vin-comparison-vin {
   position: absolute;

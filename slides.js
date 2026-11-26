@@ -1,12 +1,18 @@
 // Порядок, размеры и ссылки из прототипа Figma. Координаты в пикселях исходного фрейма.
 const vinComparisonSlide = {
   "figmaId": "5478:106",
-  "title": "Референс 60fps и VIN-пересборка",
+  "title": "Поворот и VIN-пересборка",
   "width": 1920,
   "height": 1080,
   "build": {
     "background": "#141413",
     "templateId": "vin-comparison-slide",
+    "comparison": {
+      "src": "assets/vin-comparison/reference.mp4",
+      "poster": "assets/vin-comparison/reference-poster.jpg",
+      "description": "Референс с 60fps, активация карты",
+      "label": "Поворот"
+    },
     "steps": []
   }
 };
@@ -79,7 +85,7 @@ window.presentationSlides = [
       "background": "#141413",
       "templateId": "intro-recording-slide",
       "steps": [],
-      "recording": { "src": "assets/slide-03/leasing.mp4", "poster": "assets/slide-03/poster.jpg", "raised": true }
+      "recording": { "src": "assets/slide-03/leasing-trimmed.mp4", "poster": "assets/slide-03/leasing-trimmed-poster.jpg", "raised": true }
     }
   },
   {
@@ -202,7 +208,7 @@ window.presentationSlides = [
       "overview": { "x": 0, "scale": 1920 / 2503 },
       "steps": [
         { "label": "Контекст", "x": 24, "scale": 2.1 },
-        { "label": "Приём", "x": 484, "scale": 2.1 },
+        { "label": "Разбор", "x": 484, "scale": 2.1 },
         { "label": "Переосмысление", "x": 944, "scale": 2.1 },
         { "label": "Сборка", "x": 1404, "scale": 2.1 },
         { "label": "Финал", "x": 1404, "scale": 1.67 }
@@ -211,7 +217,7 @@ window.presentationSlides = [
   },
   {
     "figmaId": "local:and-creatives",
-    "title": "Реверс-инжиниринг креативов",
+    "title": "Реверс-инжиниринг креативов при помощи AI!",
     "width": 1920,
     "height": 1080,
     "build": {
@@ -261,6 +267,7 @@ window.presentationSlides = [
     "build": {
       "background": "#000",
       "templateId": "context-pillars-slide",
+      "autoStepInterval": 450,
       "steps": [
         { "label": "Что делаем" },
         { "label": "Сценарий" },
@@ -275,7 +282,7 @@ window.presentationSlides = [
     "title": "Контекст в чате «Аукцион»",
     "width": 1920,
     "height": 1080,
-    "image": "assets/auction-chat/context.png"
+    "build": { "background": "#141413", "templateId": "auction-chat-window-slide", "steps": [] }
   },
   {
     "figmaId": "66:91",
@@ -299,6 +306,7 @@ window.presentationSlides = [
     "build": {
       "background": "#141413",
       "templateId": "idea-pillars-slide",
+      "autoStepInterval": 450,
       "steps": [
         { "label": "Главная идея" },
         { "label": "Место и сценарий" },
@@ -963,7 +971,11 @@ window.presentationSlides = [
     "build": {
       "background": "#141413",
       "templateId": "mcp-breakdown-slide",
-      "steps": []
+      "steps": [
+        { "label": "Поворот, перелив и сдвиг", "focus": "mcp-first-three", "x": 20, "centerY": 354, "scale": 1.9 },
+        { "label": "Смена текста, параллакс и характер движения", "focus": "mcp-last-three", "x": 20, "centerY": 708, "scale": 1.9 },
+        { "label": "Анимация Airbnb", "focus": "mcp-animation", "x": 622, "centerY": 552, "scale": 1.18 }
+      ]
     }
   },
   {
@@ -971,7 +983,11 @@ window.presentationSlides = [
     "title": "FFmpeg",
     "width": 1920,
     "height": 1080,
-    "image": "assets/slides/5490-920.png"
+    "build": {
+      "background": "#141413",
+      "templateId": "ffmpeg-title-slide",
+      "steps": [{ "label": "Установка FFmpeg", "focus": "ffmpeg-install" }]
+    }
   },
   {
     "figmaId": "local:airbnb-storyboard",
@@ -984,7 +1000,37 @@ window.presentationSlides = [
       "steps": []
     }
   },
-  { ...vinComparisonSlide, build: { ...vinComparisonSlide.build, sequenceVin: true } },
+  {
+    ...vinComparisonSlide,
+    "figmaId": "local:ffmpeg-comparison",
+    "title": "Характер движения и VIN-пересборка",
+    "build": {
+      ...vinComparisonSlide.build,
+      "comparison": {
+        "src": "assets/vin-comparison/ffmpeg-breakdown.mp4",
+        "poster": "assets/vin-comparison/ffmpeg-breakdown-poster.jpg",
+        "description": "Видео для разбора FFmpeg",
+        "label": "Характер движения",
+        "fit": "contain"
+      }
+    }
+  },
+  {
+    ...vinComparisonSlide,
+    "figmaId": "local:shimmer-comparison",
+    "title": "Перелив и VIN-пересборка",
+    "build": {
+      ...vinComparisonSlide.build,
+      "comparison": {
+        "src": "assets/vin-comparison/shimmer-reference.mp4",
+        "poster": "assets/vin-comparison/shimmer-reference-poster.jpg",
+        "description": "Перелив на стеклянной карточке",
+        "label": "Перелив",
+        "fit": "cover"
+      }
+    }
+  },
+  vinComparisonSlide,
   {
     "figmaId": "5462:133",
     "title": "Плеер VIN-анимации",
@@ -1058,34 +1104,32 @@ window.presentationSlides = [
     "image": "assets/slides/38.png"
   },
   {
-    "figmaId": "66:720",
-    "title": "Codex не понимает, что тебе нужно",
-    "width": 1920,
-    "height": 1080,
-    "build": { "templateId": "reference-takeaway-slide", "steps": [] },
-    "image": "assets/slides/39.png"
-  },
-  {
     "figmaId": "66:727",
-    "title": "Брать за основу то, что уже есть",
+    "title": "Опирайтесь на чужой опыт и разбирайте его",
     "width": 1920,
     "height": 1080,
     "build": { "background": "#141413", "templateId": "foundation-examples-slide", "steps": [] }
   },
   {
     "figmaId": "66:733",
-    "title": "Объясняйте, что именно берёте из референса",
+    "title": "Объясни себе, что берёшь из рефа",
     "width": 1920,
     "height": 1080,
-    "image": "assets/slides/41.png"
+    "build": { "background": "#141413", "templateId": "reference-specifics-slide", "steps": [] }
   },
   {
     "figmaId": "66:737",
     "title": "РАЗБЕРИТЕСЬ В ЗАМЫСЛЕ, ПРЕЖДЕ ЧЕМ ПОВТОРЯТЬ ПРИЁМ",
     "width": 1920,
     "height": 1080,
-    "image": "assets/slides/42.png",
-    "build": { "templateId": "thinking-film-slide", "steps": [] }
+    "build": { "background": "#141413", "templateId": "thinking-film-slide", "steps": [] }
+  },
+  {
+    "figmaId": "local:claude-artifact",
+    "title": "ИИ сейчас может всё",
+    "width": 1920,
+    "height": 1080,
+    "build": { "background": "#141413", "templateId": "claude-artifact-slide", "steps": [] }
   },
   {
     "figmaId": "local:contacts",

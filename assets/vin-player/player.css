@@ -74,6 +74,7 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 
 .stage {
   display: grid;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
   place-items: center;
   height: clamp(320px, 61dvh, 592px);
   padding: 12px;
@@ -93,29 +94,94 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 .stage-screen { border-radius: 12px; }
 
 .stage[data-view="mockup"] .stage-device {
+  position: relative;
   width: auto;
-  aspect-ratio: 310 / 586;
-  padding: 6px;
-  border: 1px solid #aaa;
-  border-radius: 36px;
-  background: linear-gradient(135deg, #c5c6c9, #383b40 18% 65%, #8d9094);
-  box-shadow: 14px 22px 34px rgb(0 0 0 / 28%);
+  max-width: 100%;
+  height: min(100%, 744px);
+  aspect-ratio: 375 / 812;
+  padding: 5px;
+  border: 1px solid #666967;
+  border-radius: 16% / 7.4%;
+  background: linear-gradient(133deg, #d6d8d5, #777b79 12%, #303332 42%, #595d5b 79%, #aeafac);
+  box-shadow: inset 0 0 0 2px rgb(255 255 255 / 14%), 10px 16px 28px rgb(0 0 0 / 32%);
+}
+
+.stage[data-view="mockup"] .stage-device::before,
+.stage[data-view="mockup"] .stage-device::after {
+  position: absolute;
+  width: 3px;
+  border-radius: 3px;
+  background: #818482;
+  content: "";
+}
+
+.stage[data-view="mockup"] .stage-device::before {
+  top: 20%;
+  left: -3px;
+  height: 6%;
+  box-shadow: 0 46px #818482;
+}
+
+.stage[data-view="mockup"] .stage-device::after {
+  top: 24%;
+  right: -3px;
+  height: 9%;
 }
 
 .stage[data-view="mockup"] .stage-screen {
   display: flex;
   flex-direction: column;
   border: 3px solid #090909;
-  border-radius: 30px;
+  border-radius: 14.6% / 6.8%;
   background: var(--surface);
+  color: var(--ink);
+  container-type: inline-size;
 }
 
-.mockup-ui { flex-shrink: 0; padding: 10px 13px 13px; }
-.stage-notch { width: 66px; height: 17px; margin: 0 auto; border-radius: 24px; background: #090909; }
-.mockup-ui p { margin: 15px 0 8px; font-size: 22px; font-weight: 700; }
+.mockup-ui { flex-shrink: 0; padding: 0 5% 12px; }
+.stage-status {
+  position: relative;
+  display: flex;
+  height: clamp(22px, 12cqw, 40px);
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 5%;
+  font: 600 clamp(8px, 3.8cqw, 13px) / 1 system-ui, sans-serif;
+}
+.stage-status img { width: 36%; }
+[data-theme="dark"] .stage-status img { filter: invert(1); }
+.stage-notch {
+  position: absolute;
+  left: 50%;
+  width: 28%;
+  height: 54%;
+  translate: -50%;
+  border-radius: 999px;
+  background: #090909;
+}
+.stage-sheet-grip {
+  width: 13%;
+  height: 3px;
+  margin: 4px auto 0;
+  border-radius: 4px;
+  background: var(--border);
+}
+.mockup-ui p { margin: 12px 0 8px; font-size: clamp(12px, 7cqw, 24px); font-weight: 700; }
 .mockup-tabs { display: flex; gap: 5px; }
-.mockup-tabs button { padding: 4px 8px; font-size: 13px; }
-.stage[data-view="mockup"] #scene { flex: 1; min-height: 0; margin: 0 auto 14px; width: calc(100% - 24px); border-radius: 14px; }
+.mockup-tabs button { padding: 4px 2cqw; font-size: clamp(8px, 4.4cqw, 16px); }
+.stage[data-view="mockup"] #scene { flex: 1; min-height: 0; margin: 0 auto 24px; width: 90%; border-radius: 14px; }
+.stage[data-view="mockup"] .stage-screen::after {
+  position: absolute;
+  bottom: 8px;
+  left: 32%;
+  width: 36%;
+  height: 4px;
+  border-radius: 4px;
+  background: currentColor;
+  opacity: .7;
+  pointer-events: none;
+  content: "";
+}
 
 .transport { padding: 16px 0; border-bottom: 1px solid var(--border); }
 .transport button { min-width: 44px; }
@@ -184,9 +250,8 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 :root[data-layout="deck"] :is(.player-tools, .stage, .transport, .chapters) { grid-column: 2; }
 :root[data-layout="deck"] .stage { min-height: 0; height: auto; }
 :root[data-layout="deck"] .stage[data-view="canvas"] .stage-device { width: 100%; }
-:root[data-layout="deck"] :is(button, .chapters p, .transport output, .speed) { font-size: 26px; }
+:root[data-layout="deck"] :is(.segmented button, .transport button, .chapters p, .transport output, .speed) { font-size: 26px; }
 :root[data-layout="deck"] .transport output { min-width: 176px; }
-:root[data-layout="deck"] .mockup-tabs button { font-size: 16px; }
 
 @media (max-width: 1100px) {
   :root[data-layout="deck"] .player {
@@ -197,5 +262,5 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
   }
   :root[data-layout="deck"] .player-versions ol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   :root[data-layout="deck"] .stage { height: clamp(320px, 61dvh, 592px); }
-  :root[data-layout="deck"] :is(button, .chapters p, .transport output, .speed) { font-size: 18px; }
+  :root[data-layout="deck"] :is(.segmented button, .transport button, .chapters p, .transport output, .speed) { font-size: 18px; }
 }
