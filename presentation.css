@@ -635,30 +635,6 @@ html, body {
   gap: 120px;
 }
 
-.contacts-item {
-  display: grid;
-  justify-items: center;
-  gap: 20px;
-}
-
-.contacts-qr .qr-card { gap: 28px; }
-
-.contacts-note {
-  margin: 0;
-  padding: 14px 24px;
-  border: 1px solid #484847;
-  border-radius: 16px;
-  background: #232322;
-  font: 28px / 36px "Deck Golos Text", sans-serif;
-  animation: contacts-note-in 420ms 650ms cubic-bezier(.22,.75,.22,1) both;
-}
-
-.contacts-item:nth-child(2) .contacts-note { animation-delay: 830ms; }
-
-@keyframes contacts-note-in {
-  from { opacity: 0; transform: translateY(10px); }
-}
-
 .qr-card {
   display: grid;
   justify-items: center;
@@ -1315,7 +1291,7 @@ html, body {
   content: "";
 }
 
-.contacts-item:nth-child(2) .qr-card-code::after { animation-delay: 2.9s; }
+.contacts-qr .qr-card:nth-child(2) .qr-card-code::after { animation-delay: 2.9s; }
 
 @keyframes contacts-glare {
   0% { transform: translateX(-100%); }
@@ -1323,7 +1299,7 @@ html, body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .thinking-film-track, .claude-artifact-window, .contacts-note, .contacts-qr .qr-card-code::after, .deck-motion-dictionary { animation: none; }
+  .thinking-film-track, .claude-artifact-window, .contacts-qr .qr-card-code::after, .deck-motion-dictionary { animation: none; }
   .contacts-qr .qr-card-code::after { display: none; }
   .iteration-meme { transition: none; }
 }
