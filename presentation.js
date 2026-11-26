@@ -10,6 +10,7 @@
   const links = document.querySelector('#links');
   const slideNumber = document.querySelector('#slide-number');
   const slideMenu = document.querySelector('.slide-menu');
+  const fullscreenButton = document.querySelector('#deck-fullscreen');
   const status = document.querySelector('#status');
   const activeVideos = () => [...slide.querySelectorAll('video:not([data-held])')];
   let index = 0;
@@ -400,10 +401,11 @@
   }
 
   async function toggleFullscreen() {
-    if (document.fullscreenElement) {
-      await document.exitFullscreen();
-    } else {
-      await document.documentElement.requestFullscreen();
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else await document.documentElement.requestFullscreen();
+    } catch {
+      status.textContent = 'Полноэкранный режим можно включить в браузере.';
     }
   }
 
@@ -429,6 +431,15 @@
       slide.focus({ preventScroll: true });
     });
   }
+
+  fullscreenButton.addEventListener('click', () => {
+    slideMenu.open = false;
+    slideMenu.querySelector('summary').focus({ preventScroll: true });
+    toggleFullscreen();
+  });
+  document.addEventListener('fullscreenchange', () => {
+    fullscreenButton.querySelector('span').textContent = document.fullscreenElement ? 'Выйти из полноэкранного режима' : 'На весь экран';
+  });
 
   presentation.addEventListener('click', event => {
     if (event.button !== 0 || event.target.closest('.slide-controls')) return;
@@ -476,9 +487,7 @@
         show(slides.length - 1);
         break;
       case 'KeyF':
-        toggleFullscreen().catch(() => {
-          status.textContent = 'Полноэкранный режим можно включить в браузере.';
-        });
+        toggleFullscreen();
         break;
       case 'KeyK':
         toggleVideo();
