@@ -2,6 +2,8 @@
 const vinComparisonSlide = {
   "figmaId": "5478:106",
   "title": "Поворот и VIN-пересборка",
+  "scene": "vin-comparison",
+  "entryDirection": "fade",
   "width": 1920,
   "height": 1080,
   "build": {
@@ -68,10 +70,10 @@ window.presentationSlides = [
   {
     "figmaId": "5466:2004",
     "title": "Кто я и что мы делаем",
+    "entryDirection": "top",
     "width": 1920,
     "height": 1080,
     "build": {
-      "background": "#141413",
       "templateId": "intro-badge-slide",
       "steps": []
     }
@@ -79,10 +81,10 @@ window.presentationSlides = [
   {
     "figmaId": "5466:2009",
     "title": "Техника в лизинг для бизнеса",
+    "scene": "intro-windows",
     "width": 1920,
     "height": 1080,
     "build": {
-      "background": "#141413",
       "templateId": "intro-recording-slide",
       "steps": [],
       "recording": { "src": "assets/slide-03/leasing-trimmed.mp4", "poster": "assets/slide-03/leasing-trimmed-poster.jpg", "raised": true }
@@ -91,10 +93,10 @@ window.presentationSlides = [
   {
     "figmaId": "5466:2042",
     "title": "Звонок по QR-коду",
+    "scene": "intro-windows",
     "width": 1920,
     "height": 1080,
     "build": {
-      "background": "#141413",
       "templateId": "intro-recording-slide",
       "steps": [],
       "recording": { "src": "assets/slide-04/qr-demo.mp4", "poster": "assets/slide-04/qr-demo.jpg" }
@@ -103,10 +105,11 @@ window.presentationSlides = [
   {
     "figmaId": "5466:2107",
     "title": "Разбираем по винтикам",
+    "scene": "intro-windows",
+    "exitMotion": "down",
     "width": 1920,
     "height": 1080,
     "build": {
-      "background": "#141413",
       "templateId": "intro-parts-slide",
       "steps": [],
       "frameCount": 97
@@ -122,6 +125,7 @@ window.presentationSlides = [
   {
     "figmaId": "5466:2181",
     "title": "КАМАЗ с божьими коровками",
+    "exitMotion": "fade",
     "width": 1920,
     "height": 1080,
     "transition": { "from": "5466:2179", "templateId": "truck-magic-transition" },
@@ -133,7 +137,6 @@ window.presentationSlides = [
     "width": 1920,
     "height": 1080,
     "build": {
-      "background": "#141413",
       "templateId": "intro-tools-slide",
       "steps": []
     }
@@ -141,6 +144,8 @@ window.presentationSlides = [
   {
     "figmaId": "5466:2001",
     "title": "Реверс-инжиниринг креативов",
+    "entryDirection": "bottom",
+    "scene": "jian-yang",
     "width": 1920,
     "height": 1080,
     "image": "assets/slides/01.webp",
@@ -148,6 +153,7 @@ window.presentationSlides = [
   },
   {
     "figmaId": "66:62",
+    "scene": "jian-yang",
     "title": "Кто я и что мы делаем",
     "width": 1920,
     "height": 1080,
@@ -155,6 +161,7 @@ window.presentationSlides = [
   },
   {
     "figmaId": "66:64",
+    "scene": "jian-yang",
     "title": "Кто я и что мы делаем",
     "width": 1920,
     "height": 1080,
@@ -165,7 +172,7 @@ window.presentationSlides = [
     "title": "Реверс-инжиниринг",
     "width": 1920,
     "height": 1080,
-    "build": { "background": "#141413", "templateId": "reverse-engineering-slide", "steps": [] }
+    "build": { "templateId": "reverse-engineering-slide", "steps": [] }
   },
   {
     "figmaId": "66:79",
@@ -177,6 +184,7 @@ window.presentationSlides = [
   {
     "figmaId": "66:77",
     "title": "BYD F3",
+    "exitMotion": "fade",
     "width": 1920,
     "height": 1080,
     "transition": { "from": "66:79", "templateId": "meme-transition" },
@@ -192,6 +200,7 @@ window.presentationSlides = [
   {
     "figmaId": "66:742",
     "title": "Скопировать",
+    "scene": "reverse-engineering-approach",
     "width": 1920,
     "height": 1080,
     "transition": { "from": "66:81", "templateId": "strike-transition" },
@@ -200,10 +209,10 @@ window.presentationSlides = [
   {
     "figmaId": "66:745",
     "title": "Общий подход",
+    "scene": "reverse-engineering-approach",
     "width": 1920,
     "height": 1080,
     "build": {
-      "background": "#141413",
       "templateId": "approach-slide",
       "overview": { "x": 0, "scale": 1920 / 2503 },
       "steps": [
@@ -218,10 +227,10 @@ window.presentationSlides = [
   {
     "figmaId": "local:and-creatives",
     "title": "Реверс-инжиниринг креативов при помощи AI!",
+    "scene": "reverse-engineering-approach",
     "width": 1920,
     "height": 1080,
     "build": {
-      "background": "#141413",
       "templateId": "creative-letter-slide",
       "steps": []
     }
@@ -229,10 +238,10 @@ window.presentationSlides = [
   {
     "figmaId": "66:760",
     "title": "Подход для анимации",
+    "scene": "reverse-engineering-approach",
     "width": 1920,
     "height": 1080,
     "build": {
-      "background": "#141413",
       "templateId": "animation-flow-slide",
       "steps": [
         { "label": "Контекст", "x": -44, "centerY": 332, "scale": 1.9 },
@@ -247,6 +256,7 @@ window.presentationSlides = [
   {
     "figmaId": "66:83",
     "title": "Контекст",
+    "scene": "reverse-engineering-approach",
     "width": 1920,
     "height": 1080,
     "image": "assets/slides/11.png"
@@ -262,10 +272,10 @@ window.presentationSlides = [
   {
     "figmaId": "5480:844",
     "title": "Что передаём в контексте",
+    "exitMotion": "down",
     "width": 1920,
     "height": 1080,
     "build": {
-      "background": "#000",
       "templateId": "context-pillars-slide",
       "autoStepInterval": 450,
       "steps": [
@@ -280,13 +290,15 @@ window.presentationSlides = [
   {
     "figmaId": "local:auction-chat",
     "title": "Контекст в чате «Аукцион»",
+    "exitMotion": "down",
     "width": 1920,
     "height": 1080,
-    "build": { "background": "#141413", "templateId": "auction-chat-window-slide", "steps": [] }
+    "build": { "templateId": "auction-chat-window-slide", "steps": [] }
   },
   {
     "figmaId": "66:91",
     "title": "идеи и рефы",
+    "entryDirection": "bottom",
     "width": 1920,
     "height": 1080,
     "image": "assets/slides/15.png"
@@ -301,10 +313,10 @@ window.presentationSlides = [
   {
     "figmaId": "5480:874",
     "title": "Идея анимации и поиск референсов",
+    "exitMotion": "down",
     "width": 1920,
     "height": 1080,
     "build": {
-      "background": "#141413",
       "templateId": "idea-pillars-slide",
       "autoStepInterval": 450,
       "steps": [
@@ -328,7 +340,6 @@ window.presentationSlides = [
     "width": 1920,
     "height": 1080,
     "build": {
-      "background": "#141413",
       "templateId": "outsourcing-highlight-slide",
       "steps": []
     }
@@ -339,7 +350,6 @@ window.presentationSlides = [
     "width": 1920,
     "height": 1080,
     "build": {
-      "background": "#141413",
       "templateId": "look-with-your-eyes-slide",
       "steps": []
     }
@@ -364,7 +374,6 @@ window.presentationSlides = [
     "width": 1920,
     "height": 1080,
     "build": {
-      "background": "#141413",
       "templateId": "resource-board-slide",
       "resourceBoard": resourceBoard,
       "overview": { "x": -80 / resourceOverviewScale, "centerY": 582, "scale": resourceOverviewScale },
@@ -922,11 +931,12 @@ window.presentationSlides = [
     "title": "Бот с материалами и ссылками",
     "width": 1920,
     "height": 1080,
-    "build": { "background": "#1a1a1a", "templateId": "telegram-qr-slide", "steps": [] }
+    "build": { "templateId": "telegram-qr-slide", "steps": [] }
   },
   {
     "figmaId": "66:93",
     "title": "Визуализация",
+    "entryDirection": "bottom",
     "width": 1920,
     "height": 1080,
     "image": "assets/slides/19.png"
@@ -958,7 +968,6 @@ window.presentationSlides = [
     "width": 1920,
     "height": 1080,
     "build": {
-      "background": "#141413",
       "templateId": "airbnb-reference-slide",
       "steps": [{ "label": "Copy link", "focus": "airbnb-copy-link", "scale": 3.2, "x": 322, "centerY": 250 }]
     }
@@ -969,7 +978,6 @@ window.presentationSlides = [
     "width": 1920,
     "height": 1080,
     "build": {
-      "background": "#141413",
       "templateId": "mcp-breakdown-slide",
       "steps": [
         { "label": "Поворот, перелив и сдвиг", "focus": "mcp-first-three", "x": 20, "centerY": 354, "scale": 1.9 },
@@ -981,10 +989,10 @@ window.presentationSlides = [
   {
     "figmaId": "5490:920",
     "title": "FFmpeg",
+    "exitMotion": "down",
     "width": 1920,
     "height": 1080,
     "build": {
-      "background": "#141413",
       "templateId": "ffmpeg-title-slide",
       "steps": [{ "label": "Установка FFmpeg", "focus": "ffmpeg-install" }]
     }
@@ -995,7 +1003,6 @@ window.presentationSlides = [
     "width": 1920,
     "height": 1080,
     "build": {
-      "background": "#141413",
       "templateId": "airbnb-storyboard-slide",
       "steps": []
     }
@@ -1036,18 +1043,20 @@ window.presentationSlides = [
     "title": "Плеер VIN-анимации",
     "width": 1920,
     "height": 1080,
-    "build": { "background": "#141413", "templateId": "vin-player-slide", "steps": [] }
+    "build": { "templateId": "vin-player-slide", "steps": [] }
   },
   {
     "figmaId": "5462:135",
     "title": "VIN-анимация в Codex",
+    "exitMotion": "down-and-fade",
     "width": 1920,
     "height": 1080,
-    "build": { "background": "#141413", "templateId": "codex-window-slide", "steps": [] }
+    "build": { "templateId": "codex-window-slide", "steps": [] }
   },
   {
     "figmaId": "66:100",
     "title": "Итерации",
+    "entryDirection": "bottom",
     "width": 1920,
     "height": 1080,
     "image": "assets/slides/30.png"
@@ -1057,15 +1066,15 @@ window.presentationSlides = [
     "title": "47",
     "width": 1920,
     "height": 1080,
-    "build": { "background": "#141413", "templateId": "iteration-count-slide", "steps": [] }
+    "build": { "templateId": "iteration-count-slide", "steps": [] }
   },
   {
     "figmaId": "66:102",
     "title": "Примеры итераций",
+    "scene": "iteration-prompts",
     "width": 1920,
     "height": 1080,
     "build": {
-      "background": "#141413",
       "templateId": "iteration-prompt-slide",
       "iterationPrompt": "Сделай карточку, как бы, чтобы она плавнее появлялась при стартовом кадре и чуть помедленнее",
       "typingInterval": 27,
@@ -1075,10 +1084,10 @@ window.presentationSlides = [
   {
     "figmaId": "local:iteration-detailed",
     "title": "Примеры итераций · Параметры анимации",
+    "scene": "iteration-prompts",
     "width": 1920,
     "height": 1080,
     "build": {
-      "background": "#141413",
       "templateId": "iteration-prompt-slide",
       "iterationPrompt": "Сделай появление карточки в начале анимации более плавным: используй fade in — opacity от 0 до 1, немного увеличь duration и примени ease-out.\n\nОстальные переходы тоже слегка замедли: увеличь их duration и используй ease-in-out для мягкого начала и завершения движения. Сохрани текущие траектории и последовательность анимации.",
       "typingInterval": 7,
@@ -1088,10 +1097,10 @@ window.presentationSlides = [
   {
     "figmaId": "66:121",
     "title": "Словарь движений",
+    "exitMotion": "down-and-fade",
     "width": 1920,
     "height": 1080,
     "build": {
-      "background": "#141413",
       "templateId": "motion-dictionary-slide",
       "steps": []
     }
@@ -1099,6 +1108,7 @@ window.presentationSlides = [
   {
     "figmaId": "66:115",
     "title": "выводы",
+    "entryDirection": "bottom",
     "width": 1920,
     "height": 1080,
     "image": "assets/slides/38.png"
@@ -1108,34 +1118,34 @@ window.presentationSlides = [
     "title": "Опирайтесь на чужой опыт и разбирайте его",
     "width": 1920,
     "height": 1080,
-    "build": { "background": "#141413", "templateId": "foundation-examples-slide", "steps": [] }
+    "build": { "templateId": "foundation-examples-slide", "steps": [] }
   },
   {
     "figmaId": "66:733",
     "title": "Объясни себе, что берёшь из рефа",
     "width": 1920,
     "height": 1080,
-    "build": { "background": "#141413", "templateId": "reference-specifics-slide", "steps": [] }
+    "build": { "templateId": "reference-specifics-slide", "steps": [] }
   },
   {
     "figmaId": "66:737",
     "title": "РАЗБЕРИТЕСЬ В ЗАМЫСЛЕ, ПРЕЖДЕ ЧЕМ ПОВТОРЯТЬ ПРИЁМ",
     "width": 1920,
     "height": 1080,
-    "build": { "background": "#141413", "templateId": "thinking-film-slide", "steps": [] }
+    "build": { "templateId": "thinking-film-slide", "steps": [] }
   },
   {
     "figmaId": "local:claude-artifact",
     "title": "ИИ сейчас может всё",
     "width": 1920,
     "height": 1080,
-    "build": { "background": "#141413", "templateId": "claude-artifact-slide", "steps": [] }
+    "build": { "templateId": "claude-artifact-slide", "steps": [] }
   },
   {
     "figmaId": "local:contacts",
     "title": "Канал и бот в Telegram",
     "width": 1920,
     "height": 1080,
-    "build": { "background": "#1a1a1a", "templateId": "contacts-slide", "steps": [] }
+    "build": { "templateId": "contacts-slide", "steps": [] }
   }
 ];

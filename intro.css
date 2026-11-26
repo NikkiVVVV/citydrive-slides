@@ -553,8 +553,6 @@
 }
 
 /* Register the second Figma export against the cab and wheels of the first. */
-#slide[data-figma-id="5466:2181"] { background: #141413; }
-
 #slide[data-figma-id="5466:2181"] #poster {
   transform-origin: top left;
   transform: matrix(.99342, 0, 0, .99401, -43.41, 44.56);

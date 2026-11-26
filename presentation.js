@@ -9,10 +9,18 @@
   const media = document.querySelector('#media');
   const links = document.querySelector('#links');
   const slideNumber = document.querySelector('#slide-number');
-  const slideMenu = document.querySelector('.slide-menu');
+  const slideControls = document.querySelector('.slide-controls');
+  const slideMenuTrigger = document.querySelector('.slide-menu-trigger');
+  const slideMenuPanel = document.querySelector('#slide-menu-panel');
   const fullscreenButton = document.querySelector('#deck-fullscreen');
   const status = document.querySelector('#status');
+  const root = document.documentElement;
+  const transitionMode = new URLSearchParams(location.search).get('transition')
+    ?? (root.dataset.deckView === 'public' ? 'vertical' : '');
+  const verticalTransitions = transitionMode === 'vertical';
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const activeVideos = () => [...slide.querySelectorAll('video:not([data-held])')];
+  if (verticalTransitions) root.dataset.deckTransition = 'vertical';
   let index = 0;
   let step = 0;
   let vinDemo = null;
@@ -20,6 +28,9 @@
   let stopIntro = null;
   let terminalLogTimers = [];
   let autoStepTimer = 0;
+  let slideMenuPinned = false;
+  let slideTransition = null;
+  let queuedSlide = null;
 
   const imageAssets = slides.map(({ image, build }) => {
     const template = build?.templateId ? document.getElementById(build.templateId) : null;
@@ -224,6 +235,45 @@
     return () => cancelAnimationFrame(frame);
   }
 
+  function mountIterationCount(counter) {
+    const tens = counter.querySelector('.iteration-count-tens');
+    const reel = counter.querySelector('.iteration-count-reel');
+    const total = 47;
+    const digitsPerCycle = 10;
+    const firstZeroIndex = digitsPerCycle * 2 - 1;
+    for (let number = digitsPerCycle * 3 - 1; number >= 0; number--) {
+      const digit = document.createElement('span');
+      digit.textContent = number % digitsPerCycle;
+      reel.append(digit);
+    }
+
+    let previousTens = 0;
+    function render(value) {
+      const nextTens = Math.floor(value / digitsPerCycle);
+      if (nextTens !== previousTens) {
+        tens.textContent = nextTens;
+        previousTens = nextTens;
+      }
+      const offset = (value % digitsPerCycle) - firstZeroIndex;
+      reel.style.transform = `translateY(calc(${offset} * var(--count-line)))`;
+    }
+
+    if (reducedMotion.matches) {
+      render(total);
+      return null;
+    }
+
+    render(0);
+    const start = performance.now();
+    let frame = requestAnimationFrame(roll);
+    function roll(now) {
+      const elapsed = Math.max(0, Math.min((now - start) / 3000, 1));
+      render(total * (1 - (1 - elapsed) ** 2));
+      if (elapsed < 1) frame = requestAnimationFrame(roll);
+    }
+    return () => cancelAnimationFrame(frame);
+  }
+
   function prepareBuild(build, resources) {
     terminalLogTimers.forEach(clearTimeout);
     terminalLogTimers = [];
@@ -238,19 +288,15 @@
     vinComparison = null;
     stopIntro?.();
     stopIntro = null;
-    slide.style.backgroundColor = build?.background ?? '';
     const template = build?.templateId ? document.getElementById(build.templateId) : null;
     buildContent.hidden = !template;
     buildContent.replaceChildren();
     if (template) buildContent.append(template.content.cloneNode(true));
     if (build?.resourceBoard) mountResourceBoard(build.resourceBoard, resources);
-    const reel = buildContent.querySelector('.iteration-count-reel');
-    if (reel) {
-      for (let count = 47; count >= 0; count--) {
-        const number = document.createElement('span');
-        number.textContent = count;
-        reel.append(number);
-      }
+    const counter = buildContent.querySelector('.iteration-count');
+    if (counter) {
+      stopIntro = mountIterationCount(counter);
+      return;
     }
     const example = buildContent.querySelector('.iteration-example');
     if (example) {
@@ -359,11 +405,11 @@
     scheduleAutoStep(!animate && step === 0 ? 500 : undefined);
   }
 
-  function show(next, fromEnd = false) {
+  function show(next, fromEnd = false, verticalEntry = false) {
     const previous = slides[index];
     index = (next + slides.length) % slides.length;
     const current = slides[index];
-    slideMenu.open = false;
+    closeSlideMenu();
     activeVideos().forEach(video => video.pause());
     media.replaceChildren(...(current.videos ?? []).map(makeVideo));
     links.replaceChildren(...(current.links ?? []).map(makeLink));
@@ -373,6 +419,7 @@
     poster.alt = current.title;
     slide.setAttribute('aria-label', `Слайд ${index + 1} из ${slides.length}`);
     slide.dataset.figmaId = current.figmaId;
+    slide.toggleAttribute('data-vertical-entry', verticalEntry);
     slideNumber.textContent = `${index + 1} / ${slides.length}`;
     prepareBuild(current.build, current.resources);
     showStep(fromEnd ? (current.build?.steps.length ?? 0) : 0, false);
@@ -390,13 +437,82 @@
     if (slides[index + 1]?.transition?.templateId === 'meme-transition') window.preloadDeckMemes();
   }
 
+  function sharesScene(previous, next) {
+    return Boolean(
+      (previous.scene && previous.scene === next.scene) ||
+      next.transition?.from === previous.figmaId ||
+      previous.transition?.from === next.figmaId
+    );
+  }
+
+  function waitForScene(next, fromEnd, sharedScene) {
+    if (!verticalTransitions || reducedMotion.matches || document.hidden || next !== index + 1) return false;
+
+    const openings = camera.querySelectorAll('[data-transition-before], .intro-window[data-depth="0"], .context-pillar.is-entering .context-pillar-art');
+    const running = Array.from(openings, element => element.getAnimations?.() ?? []).flat()
+      .filter(animation => animation.pending || animation.playState === 'running');
+    const waits = running.map(animation => animation.finished);
+    if (sharedScene && slideTransition) waits.push(slideTransition.finished);
+    if (!waits.length) return false;
+
+    const request = { next, fromEnd };
+    queuedSlide = request;
+    Promise.allSettled(waits).then(() => {
+      if (queuedSlide === request) goToSlide(request.next, request.fromEnd);
+    });
+    return true;
+  }
+
+  function goToSlide(next, fromEnd = false) {
+    queuedSlide = null;
+    const nextIndex = (next + slides.length) % slides.length;
+    const current = slides[index];
+    const incoming = slides[nextIndex];
+    const sharedScene = sharesScene(current, incoming);
+    const reverse = next < index;
+    const entrance = reverse ? current.entryDirection : incoming.entryDirection;
+    const exit = reverse ? incoming.exitMotion : current.exitMotion;
+    const crossfade = entrance === 'fade';
+    if (waitForScene(next, fromEnd, sharedScene)) return;
+    if (!verticalTransitions || !document.startViewTransition || reducedMotion.matches ||
+        nextIndex === index || document.hidden || (sharedScene && !crossfade) || (!entrance && !exit)) {
+      slideTransition?.skipTransition();
+      slideTransition = null;
+      delete root.dataset.slideDirection;
+      show(next, fromEnd);
+      return;
+    }
+
+    slideTransition?.skipTransition();
+    let direction = 'forward';
+    if (exit === 'fade') direction = 'fade-in-place';
+    else if (exit === 'down-and-fade') direction = 'down-then-fade';
+    else if (exit === 'down') direction = 'down-then-in';
+    else if (crossfade) direction = 'crossfade';
+    else if (reverse ? entrance !== 'top' : entrance === 'top') direction = 'from-top';
+    root.dataset.slideDirection = direction;
+    const transition = document.startViewTransition(() => {
+      if (slideTransition === transition) show(next, fromEnd, true);
+    });
+    slideTransition = transition;
+
+    const finish = () => {
+      if (slideTransition !== transition) return;
+      slideTransition = null;
+      delete root.dataset.slideDirection;
+    };
+    transition.ready.catch(() => {});
+    transition.finished.then(finish, finish);
+  }
+
   function navigate(direction) {
     const next = step + direction;
     const lastStep = slides[index].build?.steps.length ?? 0;
     if (next >= 0 && next <= lastStep) {
+      slideTransition?.skipTransition();
       showStep(next, true);
     } else {
-      show(index + direction, direction < 0);
+      goToSlide(index + direction, direction < 0);
     }
   }
 
@@ -425,26 +541,52 @@
     });
   }
 
-  for (const restart of document.querySelectorAll('[data-restart-deck]')) {
-    restart.addEventListener('click', () => {
-      show(0);
-      slide.focus({ preventScroll: true });
-    });
+  function setSlideMenu(open) {
+    slideMenuTrigger.setAttribute('aria-expanded', String(open));
+    slideMenuPanel.inert = !open;
   }
 
+  function closeSlideMenu() {
+    slideMenuPinned = false;
+    setSlideMenu(false);
+  }
+
+  slideControls.addEventListener('pointerenter', event => {
+    if (event.pointerType === 'mouse') setSlideMenu(true);
+  });
+  slideControls.addEventListener('pointerleave', event => {
+    if (event.pointerType === 'mouse' && !slideMenuPinned && !slideMenuPanel.contains(document.activeElement)) {
+      closeSlideMenu();
+    }
+  });
+  slideControls.addEventListener('focusout', event => {
+    if (!slideControls.contains(event.relatedTarget) && !slideControls.matches(':hover')) closeSlideMenu();
+  });
+  slideMenuTrigger.addEventListener('click', event => {
+    const wasOpen = slideMenuTrigger.getAttribute('aria-expanded') === 'true';
+    slideMenuPinned = event.detail === 0 ? !wasOpen : !slideMenuPinned;
+    setSlideMenu(slideMenuPinned);
+  });
+
+  document.querySelector('#restart-deck').addEventListener('click', () => {
+    goToSlide(0);
+    slide.focus({ preventScroll: true });
+  });
   fullscreenButton.addEventListener('click', () => {
-    slideMenu.open = false;
-    slideMenu.querySelector('summary').focus({ preventScroll: true });
+    closeSlideMenu();
+    slideMenuTrigger.focus({ preventScroll: true });
     toggleFullscreen();
   });
   document.addEventListener('fullscreenchange', () => {
-    fullscreenButton.querySelector('span').textContent = document.fullscreenElement ? 'Выйти из полноэкранного режима' : 'На весь экран';
+    const label = document.fullscreenElement ? 'Выйти из полноэкранного режима' : 'На весь экран';
+    fullscreenButton.setAttribute('aria-label', label);
+    fullscreenButton.title = label;
   });
 
   presentation.addEventListener('click', event => {
     if (event.button !== 0 || event.target.closest('.slide-controls')) return;
-    if (slideMenu.open) {
-      slideMenu.open = false;
+    if (slideMenuPinned) {
+      closeSlideMenu();
       return;
     }
     const replay = event.target.closest('[data-comparison-replay]');
@@ -461,13 +603,13 @@
 
   function handleDeckKey(event) {
     if (event.metaKey || event.ctrlKey || event.altKey || event.target?.closest('a')) return;
-    if (event.code === 'Escape' && slideMenu.open) {
-      slideMenu.open = false;
-      slideMenu.querySelector('summary').focus();
+    if (event.code === 'Escape' && slideMenuTrigger.getAttribute('aria-expanded') === 'true') {
+      closeSlideMenu();
+      slideMenuTrigger.focus({ preventScroll: true });
       event.preventDefault();
       return;
     }
-    if (event.code === 'Space' && event.target?.closest('button, summary')) return;
+    if (event.code === 'Space' && event.target?.closest('button')) return;
     switch (event.code) {
       case 'ArrowRight':
       case 'ArrowDown':
@@ -481,10 +623,10 @@
         navigate(-1);
         break;
       case 'Home':
-        show(0);
+        goToSlide(0);
         break;
       case 'End':
-        show(slides.length - 1);
+        goToSlide(slides.length - 1);
         break;
       case 'KeyF':
         toggleFullscreen();
@@ -517,6 +659,6 @@
     scheduleAutoStep();
   });
   window.addEventListener('resize', fit);
-  window.addEventListener('hashchange', () => show(indexFromHash()));
+  window.addEventListener('hashchange', () => goToSlide(indexFromHash()));
   show(indexFromHash());
 })();
